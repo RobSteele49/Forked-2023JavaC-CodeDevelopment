@@ -8,6 +8,13 @@ import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
+import com.ctre.phoenix.motorcontrol.ControlMode;
+import com.ctre.phoenix.motorcontrol.can.VictorSPX;
+import edu.wpi.first.wpilibj.Joystick;
+
+import frc.robot.Constants.OperatorConstants;
+import frc.robot.Constants.CanBus;
+
 /**
  * The VM is configured to automatically run this class, and to call the functions corresponding to
  * each mode, as described in the TimedRobot documentation. If you change the name of this class or
@@ -20,6 +27,14 @@ public class Robot extends TimedRobot {
   private String m_autoSelected;
   private final SendableChooser<String> m_chooser = new SendableChooser<>();
 
+  private Joystick m_leftStick;
+  private Joystick m_rightStick;
+
+  private VictorSPX leftMotor1;
+  private VictorSPX leftMotor2;
+  private VictorSPX rightMotor1;
+  private VictorSPX rightMotor2;
+
   /**
    * This function is run when the robot is first started up and should be used for any
    * initialization code.
@@ -29,6 +44,23 @@ public class Robot extends TimedRobot {
     m_chooser.setDefaultOption("Default Auto", kDefaultAuto);
     m_chooser.addOption("My Auto", kCustomAuto);
     SmartDashboard.putData("Auto choices", m_chooser);
+
+    int temp = CanBus.kCanID;
+
+    leftMotor1 = new VictorSPX(12); // CAN ID 12
+    leftMotor2 = new VictorSPX(13); // CAN ID 13
+
+    rightMotor1 = new VictorSPX(14); // CAN ID 14
+    rightMotor2 = new VictorSPX(15); // CAN ID 15
+
+    m_leftStick = new Joystick(0);
+    m_rightStick = new Joystick(1);
+
+    // Set leftMotor2 to follow leftMotor1
+    // Set rightMotor2 to follow rightMotor1
+    
+    leftMotor2.follow(leftMotor1);
+    rightMotor2.follow(rightMotor1);
   }
 
   /**
@@ -39,7 +71,15 @@ public class Robot extends TimedRobot {
    * SmartDashboard integrated updating.
    */
   @Override
-  public void robotPeriodic() {}
+  public void robotPeriodic() {
+
+    double leftSpeed = m_leftStick.getY(); // Get the Y axis value from the joystick
+    double rightSpeed = m_rightStick.getY(); 
+
+    leftMotor1.set(ControlMode.PercentOutput, leftSpeed); // Set the motor speed
+    rightMotor1.set(ControlMode.PercentOutput, -rightSpeed); // set the motor speed
+
+  }
 
   /**
    * This autonomous (along with the chooser code above) shows how to select between different

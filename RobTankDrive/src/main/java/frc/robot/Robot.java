@@ -6,11 +6,12 @@ package frc.robot;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.can.VictorSPX;
-// import edu.wpi.first.util.sendable.SendableRegistry;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.TimedRobot;
+
+// import edu.wpi.first.util.sendable.SendableRegistry;
 // import edu.wpi.first.wpilibj.drive.DifferentialDrive;
-//import edu.wpi.first.wpilibj.motorcontrol.PWMSparkMax;
+// import edu.wpi.first.wpilibj.motorcontrol.PWMSparkMax;
 // import java.rmi.registry.Registry;
 
 
@@ -20,11 +21,11 @@ import edu.wpi.first.wpilibj.TimedRobot;
  */
 public class Robot extends TimedRobot {
   // private DifferentialDrive m_robotDrive;
-  private Joystick m_leftStick;
-  private Joystick m_rightStick;
-
   // private final PWMSparkMax m_leftMotor = new PWMSparkMax(0);
   // private final PWMSparkMax m_rightMotor = new PWMSparkMax(1);
+
+  private Joystick m_leftStick;
+  private Joystick m_rightStick;
 
   private VictorSPX leftMotor1;
   private VictorSPX leftMotor2;
