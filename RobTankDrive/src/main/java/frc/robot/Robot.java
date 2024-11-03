@@ -9,6 +9,9 @@ import com.ctre.phoenix.motorcontrol.can.VictorSPX;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.TimedRobot;
 
+import frc.robot.Constants.OperatorConstants;
+import frc.robot.Constants.CanBus;
+
 // import edu.wpi.first.util.sendable.SendableRegistry;
 // import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 // import edu.wpi.first.wpilibj.motorcontrol.PWMSparkMax;
@@ -37,11 +40,12 @@ public class Robot extends TimedRobot {
     // SendableRegistry.addChild(m_robotDrive, m_leftMotor);
     // SendableRegistry.addChild(m_robotDrive, m_rightMotor);
 
-    leftMotor1 = new VictorSPX(12); // CAN ID 12
-    leftMotor2 = new VictorSPX(13); // CAN ID 13
 
-    rightMotor1 = new VictorSPX(14); // CAN ID 14
-    rightMotor2 = new VictorSPX(15); // CAN ID 15
+    leftMotor1 = new VictorSPX(CanBus.kLeftMotorAID);
+    leftMotor2 = new VictorSPX(CanBus.kLeftMotorBID);
+
+    rightMotor1 = new VictorSPX(CanBus.kRightMotorAID);
+    rightMotor2 = new VictorSPX(CanBus.kRightMotorBID);
 
     // We need to invert one side of the drivetrain so that positive voltages
     // result in both sides moving forward. Depending on how your robot's

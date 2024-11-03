@@ -45,13 +45,11 @@ public class Robot extends TimedRobot {
     m_chooser.addOption("My Auto", kCustomAuto);
     SmartDashboard.putData("Auto choices", m_chooser);
 
-    int temp = CanBus.kCanID;
+    leftMotor1 = new VictorSPX(CanBus.kLeftMotorAID);
+    leftMotor2 = new VictorSPX(CanBus.kLeftMotorBID);
 
-    leftMotor1 = new VictorSPX(12); // CAN ID 12
-    leftMotor2 = new VictorSPX(13); // CAN ID 13
-
-    rightMotor1 = new VictorSPX(14); // CAN ID 14
-    rightMotor2 = new VictorSPX(15); // CAN ID 15
+    rightMotor1 = new VictorSPX(CanBus.kRightMotorAID);
+    rightMotor2 = new VictorSPX(CanBus.kRightMotorBID);
 
     m_leftStick = new Joystick(0);
     m_rightStick = new Joystick(1);
@@ -71,15 +69,7 @@ public class Robot extends TimedRobot {
    * SmartDashboard integrated updating.
    */
   @Override
-  public void robotPeriodic() {
-
-    double leftSpeed = m_leftStick.getY(); // Get the Y axis value from the joystick
-    double rightSpeed = m_rightStick.getY(); 
-
-    leftMotor1.set(ControlMode.PercentOutput, leftSpeed); // Set the motor speed
-    rightMotor1.set(ControlMode.PercentOutput, -rightSpeed); // set the motor speed
-
-  }
+  public void robotPeriodic() {}
 
   /**
    * This autonomous (along with the chooser code above) shows how to select between different
@@ -118,7 +108,13 @@ public class Robot extends TimedRobot {
 
   /** This function is called periodically during operator control. */
   @Override
-  public void teleopPeriodic() {}
+  public void teleopPeriodic() {
+    double leftSpeed = m_leftStick.getY(); // Get the Y axis value from the joystick
+    double rightSpeed = m_rightStick.getY(); 
+
+    leftMotor1.set(ControlMode.PercentOutput, leftSpeed); // Set the motor speed
+    rightMotor1.set(ControlMode.PercentOutput, -rightSpeed); // set the motor speed
+}
 
   /** This function is called once when the robot is disabled. */
   @Override
