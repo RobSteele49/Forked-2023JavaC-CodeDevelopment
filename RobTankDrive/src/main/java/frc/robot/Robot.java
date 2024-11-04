@@ -51,6 +51,9 @@ public class Robot extends TimedRobot {
     // result in both sides moving forward. Depending on how your robot's
     // gearbox is constructed, you might have to invert the left side instead.
 
+    rightMotor1.setInverted(true);
+    rightMotor2.setInverted(true);
+
     // m_rightMotor.setInverted(true);
     // m_robotDrive = new DifferentialDrive(m_leftMotor::set, m_rightMotor::set);
 
@@ -71,6 +74,6 @@ public class Robot extends TimedRobot {
     double rightSpeed = m_rightStick.getY(); 
 
     leftMotor1.set(ControlMode.PercentOutput, leftSpeed); // Set the motor speed
-    rightMotor1.set(ControlMode.PercentOutput, -rightSpeed); // set the motor speed
+    rightMotor1.set(ControlMode.PercentOutput, rightSpeed); // set the motor speed
   }
 }

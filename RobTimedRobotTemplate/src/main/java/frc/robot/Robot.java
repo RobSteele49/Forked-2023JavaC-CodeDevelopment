@@ -65,6 +65,14 @@ public class Robot extends TimedRobot {
     
     leftMotor2.follow(leftMotor1);
     rightMotor2.follow(rightMotor1);
+
+    // We need to invert one side of the drivetrain so that positive voltages
+    // result in both sides moving forward. Depending on how your robot's
+    // gearbox is constructed, you might have to invert the left side instead.
+
+    rightMotor1.setInverted(true);
+    rightMotor2.setInverted(true);
+
   }
 
   /**
@@ -115,11 +123,11 @@ public class Robot extends TimedRobot {
   /** This function is called periodically during operator control. */
   @Override
   public void teleopPeriodic() {
-    double leftSpeed = m_leftStick.getY(); // Get the Y axis value from the joystick
+    double leftSpeed  = m_leftStick.getY(); // Get the Y axis value from the joystick
     double rightSpeed = m_rightStick.getY(); 
 
-    leftMotor1.set(ControlMode.PercentOutput, leftSpeed); // Set the motor speed
-    rightMotor1.set(ControlMode.PercentOutput, -rightSpeed); // set the motor speed
+    leftMotor1.set(ControlMode.PercentOutput,  leftSpeed); // Set the motor speed
+    rightMotor1.set(ControlMode.PercentOutput, rightSpeed); // set the motor speed
 
     boolean button4 = m_controlStick.getRawButton(4);
     boolean button6 = m_controlStick.getRawButton(6);
