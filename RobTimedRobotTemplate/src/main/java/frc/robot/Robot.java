@@ -12,7 +12,6 @@ import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.can.VictorSPX;
 import edu.wpi.first.wpilibj.Joystick;
 
-import frc.robot.Constants.OperatorConstants;
 import frc.robot.Constants.CanBus;
 
 /**
