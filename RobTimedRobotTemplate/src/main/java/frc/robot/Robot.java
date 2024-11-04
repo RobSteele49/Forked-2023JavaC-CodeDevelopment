@@ -13,6 +13,7 @@ import com.ctre.phoenix.motorcontrol.can.VictorSPX;
 import edu.wpi.first.wpilibj.Joystick;
 
 import frc.robot.Constants.CanBus;
+import frc.robot.Constants.JoystickPortID;
 
 /**
  * The VM is configured to automatically run this class, and to call the functions corresponding to
@@ -55,9 +56,9 @@ public class Robot extends TimedRobot {
 
     gripperMotor = new VictorSPX(CanBus.kGripper);
 
-    m_leftStick = new Joystick(0);
-    m_rightStick = new Joystick(1);
-    m_controlStick = new Joystick(2);
+    m_leftStick    = new Joystick(JoystickPortID.kLeftJoystick);
+    m_rightStick   = new Joystick(JoystickPortID.kRightJoystick);
+    m_controlStick = new Joystick(JoystickPortID.kControlJoystick);
 
     // Set leftMotor2 to follow leftMotor1
     // Set rightMotor2 to follow rightMotor1
