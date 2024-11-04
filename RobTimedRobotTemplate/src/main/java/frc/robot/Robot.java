@@ -12,7 +12,7 @@ import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.can.VictorSPX;
 import edu.wpi.first.wpilibj.Joystick;
 
-import frc.robot.Constants.CanBus;
+import frc.robot.Constants.CanBusID;
 import frc.robot.Constants.JoystickPortID;
 
 /**
@@ -31,10 +31,10 @@ public class Robot extends TimedRobot {
   private Joystick m_rightStick;
   private Joystick m_controlStick;
 
-  private VictorSPX leftMotor1;
-  private VictorSPX leftMotor2;
-  private VictorSPX rightMotor1;
-  private VictorSPX rightMotor2;
+  private VictorSPX leftSimA;
+  private VictorSPX leftSimB;
+  private VictorSPX rightSimA;
+  private VictorSPX rightSimB;
 
   private VictorSPX gripperMotor;
 
@@ -48,30 +48,30 @@ public class Robot extends TimedRobot {
     m_chooser.addOption("My Auto", kCustomAuto);
     SmartDashboard.putData("Auto choices", m_chooser);
 
-    leftMotor1 = new VictorSPX(CanBus.kLeftMotorAID);
-    leftMotor2 = new VictorSPX(CanBus.kLeftMotorBID);
+    leftSimA = new VictorSPX(CanBusID.kLeftSimA);
+    leftSimB = new VictorSPX(CanBusID.kLeftSimB);
 
-    rightMotor1 = new VictorSPX(CanBus.kRightMotorAID);
-    rightMotor2 = new VictorSPX(CanBus.kRightMotorBID);
+    rightSimA = new VictorSPX(CanBusID.kRightSimA);
+    rightSimB = new VictorSPX(CanBusID.kRightSimB);
 
-    gripperMotor = new VictorSPX(CanBus.kGripper);
+    gripperMotor = new VictorSPX(CanBusID.kGripper);
 
     m_leftStick    = new Joystick(JoystickPortID.kLeftJoystick);
     m_rightStick   = new Joystick(JoystickPortID.kRightJoystick);
-    m_controlStick = new Joystick(JoystickPortID.kControlJoystick);
+    m_controlStick = new Joystick(JoystickPortID.kArmJoystick);
 
     // Set leftMotor2 to follow leftMotor1
     // Set rightMotor2 to follow rightMotor1
     
-    leftMotor2.follow(leftMotor1);
-    rightMotor2.follow(rightMotor1);
+    leftSimB.follow(leftSimA);
+    rightSimB.follow(rightSimA);
 
     // We need to invert one side of the drivetrain so that positive voltages
     // result in both sides moving forward. Depending on how your robot's
     // gearbox is constructed, you might have to invert the left side instead.
 
-    rightMotor1.setInverted(true);
-    rightMotor2.setInverted(true);
+    rightSimA.setInverted(true);
+    // rightSimB.setInverted(true); since rightSimB is following rightSimA I don't think I need the invert
 
   }
 
@@ -126,8 +126,8 @@ public class Robot extends TimedRobot {
     double leftSpeed  = m_leftStick.getY(); // Get the Y axis value from the joystick
     double rightSpeed = m_rightStick.getY(); 
 
-    leftMotor1.set(ControlMode.PercentOutput,  leftSpeed); // Set the motor speed
-    rightMotor1.set(ControlMode.PercentOutput, rightSpeed); // set the motor speed
+    leftSimA.set(ControlMode.PercentOutput,  leftSpeed); // Set the motor speed
+    rightSimA.set(ControlMode.PercentOutput, rightSpeed); // set the motor speed
 
     boolean button4 = m_controlStick.getRawButton(4);
     boolean button6 = m_controlStick.getRawButton(6);
