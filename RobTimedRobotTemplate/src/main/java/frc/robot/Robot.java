@@ -29,11 +29,14 @@ public class Robot extends TimedRobot {
 
   private Joystick m_leftStick;
   private Joystick m_rightStick;
+  private Joystick m_controlStick;
 
   private VictorSPX leftMotor1;
   private VictorSPX leftMotor2;
   private VictorSPX rightMotor1;
   private VictorSPX rightMotor2;
+
+  private VictorSPX gripperMotor;
 
   /**
    * This function is run when the robot is first started up and should be used for any
@@ -51,8 +54,11 @@ public class Robot extends TimedRobot {
     rightMotor1 = new VictorSPX(CanBus.kRightMotorAID);
     rightMotor2 = new VictorSPX(CanBus.kRightMotorBID);
 
+    gripperMotor = new VictorSPX(CanBus.kGripper);
+
     m_leftStick = new Joystick(0);
     m_rightStick = new Joystick(1);
+    m_controlStick = new Joystick(2);
 
     // Set leftMotor2 to follow leftMotor1
     // Set rightMotor2 to follow rightMotor1
@@ -114,7 +120,23 @@ public class Robot extends TimedRobot {
 
     leftMotor1.set(ControlMode.PercentOutput, leftSpeed); // Set the motor speed
     rightMotor1.set(ControlMode.PercentOutput, -rightSpeed); // set the motor speed
-}
+
+    boolean button4 = m_controlStick.getRawButton(4);
+    boolean button6 = m_controlStick.getRawButton(6);
+  
+    if (button4) {
+      gripperMotor.set(ControlMode.PercentOutput, 0.25);
+    } else {
+      gripperMotor.set(ControlMode.PercentOutput, 0.0);
+      if (button6) {
+        gripperMotor.set(ControlMode.PercentOutput, -0.25);
+      } else {
+          gripperMotor.set(ControlMode.PercentOutput, 0.0);
+      }
+    }
+
+
+  }
 
   /** This function is called once when the robot is disabled. */
   @Override
