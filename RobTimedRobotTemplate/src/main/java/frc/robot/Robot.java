@@ -41,7 +41,7 @@ public class Robot extends TimedRobot {
 
   private VictorSPX gripperMotor;
 
-  // navX MXP using SPI AHRS
+  // navX MXP using SPI AHRS;
   AHRS gyro = new AHRS(SPI.Port.kMXP);
 
   /**
