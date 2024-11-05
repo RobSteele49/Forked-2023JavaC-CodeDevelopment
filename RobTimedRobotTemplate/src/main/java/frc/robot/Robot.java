@@ -4,6 +4,9 @@
 
 package frc.robot;
 
+import com.kauailabs.navx.frc.AHRS;
+import edu.wpi.first.wpilibj.SPI.Port;
+
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -11,7 +14,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.can.VictorSPX;
 import edu.wpi.first.wpilibj.Joystick;
-
+import edu.wpi.first.wpilibj.SPI;
 import frc.robot.Constants.CanBusID;
 import frc.robot.Constants.JoystickPortID;
 
@@ -37,6 +40,9 @@ public class Robot extends TimedRobot {
   private VictorSPX rightSimB;
 
   private VictorSPX gripperMotor;
+
+  // navX MXP using SPI AHRS
+  AHRS gyro = new AHRS(SPI.Port.kMXP);
 
   /**
    * This function is run when the robot is first started up and should be used for any
@@ -72,6 +78,7 @@ public class Robot extends TimedRobot {
 
     rightSimA.setInverted(true);
     // rightSimB.setInverted(true); since rightSimB is following rightSimA I don't think I need the invert
+
 
   }
 
@@ -143,6 +150,8 @@ public class Robot extends TimedRobot {
       }
     }
 
+    double gryoGetAngle = gyro.getAngle();
+    double x = gyro.getRoll();
 
   }
 
