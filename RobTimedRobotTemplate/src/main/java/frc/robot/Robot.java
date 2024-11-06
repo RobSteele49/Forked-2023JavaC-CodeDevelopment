@@ -42,6 +42,12 @@ public class Robot extends TimedRobot {
 
   private VictorSPX gripperMotor;
 
+  private double leftSpeed;
+  private double rightSpeed;
+
+  private boolean button4;
+  private boolean button6;
+  
   // navX MXP using SPI AHRS;
   AHRS gyro = new AHRS(SPI.Port.kMXP);
 
@@ -106,8 +112,14 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void autonomousInit() {
+
+    /*
+     * These two statements seem like they don't need to both be there.
+     */
+    
     m_autoSelected = m_chooser.getSelected();
     m_autoSelected = SmartDashboard.getString("Auto Selector", kDefaultAuto);
+    
     System.out.println("Auto selected: " + m_autoSelected);
   }
 
@@ -134,14 +146,14 @@ public class Robot extends TimedRobot {
   /** This function is called periodically during operator control. */
   @Override
   public void teleopPeriodic() {
-    double leftSpeed  = m_leftStick.getY(); // Get the Y axis value from the joystick
-    double rightSpeed = m_rightStick.getY(); 
+    leftSpeed  = m_leftStick.getY(); // Get the Y axis value from the joystick
+    rightSpeed = m_rightStick.getY(); 
 
     leftSimA.set(ControlMode.PercentOutput,  leftSpeed); // Set the motor speed
     rightSimA.set(ControlMode.PercentOutput, rightSpeed); // set the motor speed
 
-    boolean button4 = m_controlStick.getRawButton(4);
-    boolean button6 = m_controlStick.getRawButton(6);
+    button4 = m_controlStick.getRawButton(4);
+    button6 = m_controlStick.getRawButton(6);
   
     if (button4) {
       gripperMotor.set(ControlMode.PercentOutput, 0.25);
@@ -155,7 +167,6 @@ public class Robot extends TimedRobot {
     }
 
     double gryoGetAngle = gyro.getAngle();
-    double x = gyro.getRoll();
 
   }
 
