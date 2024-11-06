@@ -13,10 +13,14 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.can.VictorSPX;
+
+import edu.wpi.first.util.sendable.SendableRegistry;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.SPI;
 import frc.robot.Constants.CanBusID;
 import frc.robot.Constants.JoystickPortID;
+
+import edu.wpi.first.wpilibj.interfaces.Gyro;
 
 /**
  * The VM is configured to automatically run this class, and to call the functions corresponding to
@@ -48,6 +52,10 @@ public class Robot extends TimedRobot {
   private boolean button4;
   private boolean button6;
   
+  private double gripperSpeed = 0.0;
+
+  private double gyroAngle;
+
   // navX MXP using SPI AHRS;
   AHRS gyro = new AHRS(SPI.Port.kMXP);
 
@@ -87,6 +95,7 @@ public class Robot extends TimedRobot {
     rightSimA.setInverted(true);
     // rightSimB.setInverted(true); since rightSimB is following rightSimA I don't think I need the invert
 
+    SendableRegistry.addLW(gyro, "Gyro");
 
   }
 
@@ -98,7 +107,18 @@ public class Robot extends TimedRobot {
    * SmartDashboard integrated updating.
    */
   @Override
-  public void robotPeriodic() {}
+  public void robotPeriodic() {
+
+    /*
+     * Debugging the display of the angle by incrementing the gyroGetAngle by 0.01 each iteration.
+     * Not sure if the code would look better if I used gyro.GetAngle() in the function
+     * SmartDashboard class?
+     */
+    
+    gyroAngle = gyro.getAngle();
+    SmartDashboard.putNumber("Gyro Angle", gyroAngle);
+
+  }
 
   /**
    * This autonomous (along with the chooser code above) shows how to select between different
@@ -155,19 +175,19 @@ public class Robot extends TimedRobot {
     button4 = m_controlStick.getRawButton(4);
     button6 = m_controlStick.getRawButton(6);
   
+    gripperSpeed = 0.0;
     if (button4) {
-      gripperMotor.set(ControlMode.PercentOutput, 0.25);
+      gripperSpeed = 0.25;
     } else {
-      gripperMotor.set(ControlMode.PercentOutput, 0.0);
+      gripperSpeed = 0.0;
       if (button6) {
-        gripperMotor.set(ControlMode.PercentOutput, -0.25);
+        gripperSpeed = -0.25;
       } else {
-          gripperMotor.set(ControlMode.PercentOutput, 0.0);
+        gripperSpeed = 0.0;
       }
     }
-
-    double gryoGetAngle = gyro.getAngle();
-
+    gripperMotor.set(ControlMode.PercentOutput, gripperSpeed);
+    SmartDashboard.putNumber("Gripper Speed", gripperSpeed);
   }
 
   /** This function is called once when the robot is disabled. */
