@@ -4,7 +4,7 @@
 
 package frc.robot;
 
-import com.kauailabs.navx.frc.AHRS;
+// import com.kauailabs.navx.frc.AHRS;
 import edu.wpi.first.wpilibj.SPI.Port;
 
 import edu.wpi.first.wpilibj.TimedRobot;
@@ -20,7 +20,10 @@ import edu.wpi.first.wpilibj.SPI;
 import frc.robot.Constants.CanBusID;
 import frc.robot.Constants.JoystickPortID;
 
-import edu.wpi.first.wpilibj.interfaces.Gyro;
+import com.revrobotics.CANSparkMax;
+import com.revrobotics.CANSparkMaxLowLevel.MotorType;
+
+// import edu.wpi.first.wpilibj.interfaces.Gyro;
 
 /**
  * The VM is configured to automatically run this class, and to call the functions corresponding to
@@ -30,8 +33,11 @@ import edu.wpi.first.wpilibj.interfaces.Gyro;
  */
 public class Robot extends TimedRobot {
   private static final String kDefaultAuto = "Default";
-  private static final String kCustomAuto = "My Auto";
-  private static final String kRobAuto = "Rob Auto";
+  private static final String kCustomAuto  = "My Auto";
+  private static final String kRobAuto     = "Rob Auto";
+  private static final String kLeoAuto     = "Leo Auto";
+  private static final String KGabAuto     = "Gab Auto";
+
   private String m_autoSelected;
   private final SendableChooser<String> m_chooser = new SendableChooser<>();
 
@@ -49,15 +55,15 @@ public class Robot extends TimedRobot {
   private double leftSpeed;
   private double rightSpeed;
 
-  private boolean button4;
+  private boolean button5;
   private boolean button6;
   
   private double gripperSpeed = 0.0;
 
-  private double gyroAngle;
+  // private double gyroAngle;
 
   // navX MXP using SPI AHRS;
-  AHRS gyro = new AHRS(SPI.Port.kMXP);
+  // AHRS gyro = new AHRS(SPI.Port.kMXP);
 
   /**
    * This function is run when the robot is first started up and should be used for any
@@ -66,8 +72,12 @@ public class Robot extends TimedRobot {
   @Override
   public void robotInit() {
     m_chooser.setDefaultOption("Default Auto", kDefaultAuto);
-    m_chooser.addOption("My Auto", kCustomAuto);
-    m_chooser.addOption("Rob Auto",kRobAuto);
+    m_chooser.addOption("My Auto",  kCustomAuto);
+    m_chooser.addOption("Rob Auto", kRobAuto);
+    m_chooser.addOption("Leo Auto", kLeoAuto);
+    m_chooser.addOption("Gab Auto", KGabAuto);
+
+
     SmartDashboard.putData("Auto choices", m_chooser);
 
     leftSimA = new VictorSPX(CanBusID.kLeftSimA);
@@ -76,7 +86,7 @@ public class Robot extends TimedRobot {
     rightSimA = new VictorSPX(CanBusID.kRightSimA);
     rightSimB = new VictorSPX(CanBusID.kRightSimB);
 
-    gripperMotor = new VictorSPX(CanBusID.kGripper);
+    gripperMotor = new CANSparkMax(CanBusID.kGripper, MotorType.kBrushed);
 
     m_leftStick    = new Joystick(JoystickPortID.kLeftJoystick);
     m_rightStick   = new Joystick(JoystickPortID.kRightJoystick);
@@ -85,8 +95,8 @@ public class Robot extends TimedRobot {
     // Set leftMotor2 to follow leftMotor1
     // Set rightMotor2 to follow rightMotor1
     
-    leftSimB.follow(leftSimA);
-    rightSimB.follow(rightSimA);
+    // leftSimB.follow(leftSimA);
+    // rightSimB.follow(rightSimA);
 
     // We need to invert one side of the drivetrain so that positive voltages
     // result in both sides moving forward. Depending on how your robot's
@@ -95,7 +105,7 @@ public class Robot extends TimedRobot {
     rightSimA.setInverted(true);
     // rightSimB.setInverted(true); since rightSimB is following rightSimA I don't think I need the invert
 
-    SendableRegistry.addLW(gyro, "Gyro");
+    // SendableRegistry.addLW(gyro, "Gyro");
 
   }
 
@@ -115,8 +125,8 @@ public class Robot extends TimedRobot {
      * SmartDashboard class?
      */
     
-    gyroAngle = gyro.getAngle();
-    SmartDashboard.putNumber("Gyro Angle", gyroAngle);
+    // gyroAngle = gyro.getAngle();
+    // SmartDashboard.putNumber("Gyro Angle", gyroAngle);
 
   }
 
@@ -153,6 +163,11 @@ public class Robot extends TimedRobot {
         // Put custom auto code here
         break;
       case kDefaultAuto:
+        break;
+      case kLeoAuto:
+        break;
+      case KGabAuto:
+        break;
       default:
         // Put default auto code here
         break;
@@ -169,14 +184,17 @@ public class Robot extends TimedRobot {
     leftSpeed  = m_leftStick.getY(); // Get the Y axis value from the joystick
     rightSpeed = m_rightStick.getY(); 
 
-    leftSimA.set(ControlMode.PercentOutput,  leftSpeed); // Set the motor speed
-    rightSimA.set(ControlMode.PercentOutput, rightSpeed); // set the motor speed
+    SmartDashboard.putNumber("Left Joystick", leftSpeed);
+    SmartDashboard.putNumber("Right Joystick", rightSpeed);
 
-    button4 = m_controlStick.getRawButton(4);
+    // leftSimA.set(ControlMode.PercentOutput,  leftSpeed); // Set the motor speed
+    // rightSimA.set(ControlMode.PercentOutput, rightSpeed); // set the motor speed
+
+    button5 = m_controlStick.getRawButton(5);
     button6 = m_controlStick.getRawButton(6);
   
     gripperSpeed = 0.0;
-    if (button4) {
+    if (button5) {
       gripperSpeed = 0.25;
     } else {
       gripperSpeed = 0.0;
@@ -186,7 +204,8 @@ public class Robot extends TimedRobot {
         gripperSpeed = 0.0;
       }
     }
-    gripperMotor.set(ControlMode.PercentOutput, gripperSpeed);
+    
+    gripperMotor.set(gripperSpeed);
     SmartDashboard.putNumber("Gripper Speed", gripperSpeed);
   }
 

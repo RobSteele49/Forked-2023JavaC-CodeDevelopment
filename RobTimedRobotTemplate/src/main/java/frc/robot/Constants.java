@@ -24,9 +24,9 @@ public class Constants {
      */
     
      public static class JoystickPortID {
-      public static final int kLeftJoystick    = 0;
-      public static final int kRightJoystick   = 1;
-      public static final int kArmJoystick = 2;
+      public static final int kLeftJoystick  = 0;
+      public static final int kRightJoystick = 1;
+      public static final int kArmJoystick   = 2;
      }
 
 }
