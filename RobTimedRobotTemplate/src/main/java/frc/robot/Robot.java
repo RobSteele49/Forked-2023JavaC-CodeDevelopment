@@ -32,6 +32,11 @@ import com.revrobotics.CANSparkLowLevel.MotorType;
  * project.
  */
 public class Robot extends TimedRobot {
+
+  /*
+   * The first set of constants are for the autonomous functions
+   */
+
   private static final String kDefaultAuto = "Default";
   private static final String kCustomAuto  = "My Auto";
   private static final String kRobAuto     = "Rob Auto";
@@ -41,16 +46,30 @@ public class Robot extends TimedRobot {
   private String m_autoSelected;
   private final SendableChooser<String> m_chooser = new SendableChooser<>();
 
+  /*
+   * These three private variables are for the three joysticks use for this robot
+   */
+
   private Joystick m_leftStick;
   private Joystick m_rightStick;
   private Joystick m_controlStick;
+
+  /*
+   * These four private variables are for the 4 controllers for the base of the robot.
+   */
 
   private VictorSPX leftSimA;
   private VictorSPX leftSimB;
   private VictorSPX rightSimA;
   private VictorSPX rightSimB;
 
+  /*
+   * These three private variables are for the 3 controllers for the arm.
+   */
+
   private CANSparkMax gripperMotor;
+  private CANSparkMax shoulderMotor;
+  private CANSparkMax wristMotor;
 
   private double leftSpeed;
   private double rightSpeed;
@@ -86,7 +105,9 @@ public class Robot extends TimedRobot {
     rightSimA = new VictorSPX(CanBusID.kRightSimA);
     rightSimB = new VictorSPX(CanBusID.kRightSimB);
 
-    gripperMotor = new CANSparkMax(1, MotorType.kBrushed);
+    gripperMotor  = new CANSparkMax(CanBusID.kGripper, MotorType.kBrushed);
+    shoulderMotor = new CANSparkMax(CanBusID.kShoulderJoint, MotorType.KBrushless);
+    wristMotor    = new CANSparkMax(CanBusID.kWristJoint, MotorType.kBrushless);
 
     m_leftStick    = new Joystick(JoystickPortID.kLeftJoystick);
     m_rightStick   = new Joystick(JoystickPortID.kRightJoystick);

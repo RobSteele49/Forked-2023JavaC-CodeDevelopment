@@ -11,12 +11,12 @@ public class Constants {
 
     public static class CanBusID {
       public static final int kGripper       =  1;
-      public static final int kLowerArmJoint =  2;
-      public static final int kUpperArmJoint =  3;
-      public static final int kLeftSimA  = 13;
-      public static final int kLeftSimB  = 14;
-      public static final int kRightSimA = 12;
-      public static final int kRightSimB = 15;
+      public static final int kShoulderJoint =  2;
+      public static final int kWristJoint    =  3;
+      public static final int kLeftSimA      = 13;
+      public static final int kLeftSimB      = 14;
+      public static final int kRightSimA     = 12;
+      public static final int kRightSimB     = 15;
     }
 
     /*
