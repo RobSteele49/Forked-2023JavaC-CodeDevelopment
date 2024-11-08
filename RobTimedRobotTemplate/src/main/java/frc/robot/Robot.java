@@ -4,8 +4,7 @@
 
 package frc.robot;
 
-// import com.kauailabs.navx.frc.AHRS;
-import edu.wpi.first.wpilibj.SPI.Port;
+import com.kauailabs.navx.frc.AHRS;
 
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
@@ -17,6 +16,7 @@ import com.ctre.phoenix.motorcontrol.can.VictorSPX;
 import edu.wpi.first.util.sendable.SendableRegistry;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.SPI;
+import edu.wpi.first.wpilibj.SPI.Port;
 import frc.robot.Constants.CanBusID;
 import frc.robot.Constants.JoystickPortID;
 
@@ -87,7 +87,7 @@ public class Robot extends TimedRobot {
   // private double gyroAngle;
 
   // navX MXP using SPI AHRS;
-  // AHRS gyro = new AHRS(SPI.Port.kMXP);
+  AHRS gyro = new AHRS(SPI.Port.kMXP);
 
   /**
    * This function is run when the robot is first started up and should be used for any
@@ -120,8 +120,8 @@ public class Robot extends TimedRobot {
     // Set leftMotor2 to follow leftMotor1
     // Set rightMotor2 to follow rightMotor1
     
-    // leftSimB.follow(leftSimA);
-    // rightSimB.follow(rightSimA);
+    leftSimB.follow(leftSimA);
+    rightSimB.follow(rightSimA);
 
     // We need to invert one side of the drivetrain so that positive voltages
     // result in both sides moving forward. Depending on how your robot's
@@ -130,7 +130,7 @@ public class Robot extends TimedRobot {
     rightSimA.setInverted(true);
     // rightSimB.setInverted(true); since rightSimB is following rightSimA I don't think I need the invert
 
-    // SendableRegistry.addLW(gyro, "Gyro");
+    SendableRegistry.addLW(gyro, "Gyro");
 
   }
 
@@ -150,8 +150,7 @@ public class Robot extends TimedRobot {
      * SmartDashboard class?
      */
     
-    // gyroAngle = gyro.getAngle();
-    // SmartDashboard.putNumber("Gyro Angle", gyroAngle);
+    SmartDashboard.putNumber("Gyro Angle", gyro.getAngle());
 
   }
 
