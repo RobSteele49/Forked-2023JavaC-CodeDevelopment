@@ -21,6 +21,7 @@ import frc.robot.Constants.CanBusID;
 import frc.robot.Constants.JoystickPortID;
 
 import com.revrobotics.CANSparkMax;
+import com.revrobotics.RelativeEncoder;
 import com.revrobotics.CANSparkLowLevel;
 import com.revrobotics.CANSparkLowLevel.MotorType;
 // import edu.wpi.first.wpilibj.interfaces.Gyro;
@@ -77,7 +78,11 @@ public class Robot extends TimedRobot {
   private boolean button5;
   private boolean button6;
   
-  private double gripperSpeed = 0.0;
+  private double          gripperSpeed = 0.0;
+  private RelativeEncoder shoulderMotorEncoder;
+  private double          shoulderMotorPosition;
+  private RelativeEncoder wristMotorEncoder;
+  private double          wristMotorPosition;
 
   // private double gyroAngle;
 
@@ -96,7 +101,6 @@ public class Robot extends TimedRobot {
     m_chooser.addOption("Leo Auto", kLeoAuto);
     m_chooser.addOption("Gab Auto", KGabAuto);
 
-
     SmartDashboard.putData("Auto choices", m_chooser);
 
     leftSimA = new VictorSPX(CanBusID.kLeftSimA);
@@ -106,7 +110,7 @@ public class Robot extends TimedRobot {
     rightSimB = new VictorSPX(CanBusID.kRightSimB);
 
     gripperMotor  = new CANSparkMax(CanBusID.kGripper, MotorType.kBrushed);
-    shoulderMotor = new CANSparkMax(CanBusID.kShoulderJoint, MotorType.KBrushless);
+    shoulderMotor = new CANSparkMax(CanBusID.kShoulderJoint, MotorType.kBrushless);
     wristMotor    = new CANSparkMax(CanBusID.kWristJoint, MotorType.kBrushless);
 
     m_leftStick    = new Joystick(JoystickPortID.kLeftJoystick);
@@ -244,7 +248,15 @@ public class Robot extends TimedRobot {
 
   /** This function is called periodically during test mode. */
   @Override
-  public void testPeriodic() {}
+  public void testPeriodic() {
+    shoulderMotorEncoder = shoulderMotor.getEncoder();
+    shoulderMotorPosition = shoulderMotorEncoder.getPosition();
+    SmartDashboard.putNumber("Shoulder Motor Position", shoulderMotorPosition);
+    
+    wristMotorEncoder    = wristMotor.getEncoder();
+    wristMotorPosition   = wristMotorEncoder.getPosition();
+    SmartDashboard.putNumber("Wrist Motor Position", wristMotorPosition);
+  }
 
   /** This function is called once when the robot is first started up. */
   @Override
