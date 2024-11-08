@@ -29,4 +29,12 @@ public class Constants {
       public static final int kArmJoystick   = 2;
      }
 
+     /*
+      * Default speed +/- for the gripper
+      */
+
+      public static class Gripper {
+        public static final double kGripperSpeed = 0.5;
+      }
+      
 }

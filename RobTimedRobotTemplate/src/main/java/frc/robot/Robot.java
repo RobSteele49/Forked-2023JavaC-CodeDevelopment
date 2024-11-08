@@ -17,6 +17,7 @@ import edu.wpi.first.util.sendable.SendableRegistry;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.SPI;
 import edu.wpi.first.wpilibj.SPI.Port;
+import frc.robot.Constants.Gripper;
 import frc.robot.Constants.CanBusID;
 import frc.robot.Constants.JoystickPortID;
 
@@ -219,11 +220,11 @@ public class Robot extends TimedRobot {
   
     gripperSpeed = 0.0;
     if (button5) {
-      gripperSpeed = 0.25;
+      gripperSpeed = Gripper.kGripperSpeed;
     } else {
       gripperSpeed = 0.0;
       if (button6) {
-        gripperSpeed = -0.25;
+        gripperSpeed = -Gripper.kGripperSpeed;
       } else {
         gripperSpeed = 0.0;
       }
@@ -257,6 +258,26 @@ public class Robot extends TimedRobot {
     wristMotorEncoder    = wristMotor.getEncoder();
     wristMotorPosition   = wristMotorEncoder.getPosition();
     SmartDashboard.putNumber("Wrist Motor Position", wristMotorPosition);
+
+    button5 = m_controlStick.getRawButton(5);
+    button6 = m_controlStick.getRawButton(6);
+  
+    gripperSpeed = 0.0;
+    if (button5) {
+      gripperSpeed = Gripper.kGripperSpeed;
+    } else {
+      gripperSpeed = 0.0;
+      if (button6) {
+        gripperSpeed = -Gripper.kGripperSpeed;
+      } else {
+        gripperSpeed = 0.0;
+      }
+    }
+
+    SmartDashboard.putNumber("Gripper Speed", gripperSpeed);
+    SmartDashboard.putNumber("Button 5", gripperSpeed);
+    SmartDashboard.putNumber("Button 6", gripperSpeed);
+
   }
 
   /** This function is called once when the robot is first started up. */
