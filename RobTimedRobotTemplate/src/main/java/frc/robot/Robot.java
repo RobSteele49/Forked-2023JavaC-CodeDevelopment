@@ -21,8 +21,8 @@ import frc.robot.Constants.CanBusID;
 import frc.robot.Constants.JoystickPortID;
 
 import com.revrobotics.CANSparkMax;
-import com.revrobotics.CANSparkMaxLowLevel.MotorType;
-
+import com.revrobotics.CANSparkLowLevel;
+import com.revrobotics.CANSparkLowLevel.MotorType;
 // import edu.wpi.first.wpilibj.interfaces.Gyro;
 
 /**
@@ -50,7 +50,7 @@ public class Robot extends TimedRobot {
   private VictorSPX rightSimA;
   private VictorSPX rightSimB;
 
-  private VictorSPX gripperMotor;
+  private CANSparkMax gripperMotor;
 
   private double leftSpeed;
   private double rightSpeed;
@@ -86,7 +86,7 @@ public class Robot extends TimedRobot {
     rightSimA = new VictorSPX(CanBusID.kRightSimA);
     rightSimB = new VictorSPX(CanBusID.kRightSimB);
 
-    gripperMotor = new CANSparkMax(CanBusID.kGripper, MotorType.kBrushed);
+    gripperMotor = new CANSparkMax(1, MotorType.kBrushed);
 
     m_leftStick    = new Joystick(JoystickPortID.kLeftJoystick);
     m_rightStick   = new Joystick(JoystickPortID.kRightJoystick);
