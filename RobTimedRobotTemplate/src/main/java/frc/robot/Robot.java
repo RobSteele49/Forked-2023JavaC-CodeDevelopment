@@ -275,8 +275,9 @@ public class Robot extends TimedRobot {
     }
 
     SmartDashboard.putNumber("Gripper Speed", gripperSpeed);
-    SmartDashboard.putNumber("Button 5", gripperSpeed);
-    SmartDashboard.putNumber("Button 6", gripperSpeed);
+    SmartDashboard.putBoolean("Button 5", button5);
+    SmartDashboard.putBoolean("Button 6", button6);
+    
 
   }
 
