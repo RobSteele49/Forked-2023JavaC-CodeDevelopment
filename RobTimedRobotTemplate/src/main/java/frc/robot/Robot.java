@@ -244,7 +244,9 @@ public class Robot extends TimedRobot {
 
   /** This function is called once when test mode is enabled. */
   @Override
-  public void testInit() {}
+  public void testInit() {
+    System.out.println("Test Init function");
+  }
 
   /** This function is called periodically during test mode. */
   @Override
