@@ -258,7 +258,7 @@ public class Robot extends TimedRobot {
   /** This function is called periodically during test mode. */
   @Override
   public void testPeriodic() {
-    shoulderMotorEncoder = shoulderMotor.getEncoder();
+    shoulderMotorEncoder  = shoulderMotor.getEncoder();
     shoulderMotorPosition = shoulderMotorEncoder.getPosition();
     SmartDashboard.putNumber("Shoulder Motor Position", shoulderMotorPosition);
     
