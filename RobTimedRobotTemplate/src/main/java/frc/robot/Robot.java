@@ -16,6 +16,8 @@ import com.ctre.phoenix.motorcontrol.can.VictorSPX;
 import edu.wpi.first.util.sendable.SendableRegistry;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.SPI;
+import edu.wpi.first.wpilibj.Timer; // use timer for different modes
+
 // never used import edu.wpi.first.wpilibj.SPI.Port;
 import frc.robot.Constants.Gripper;
 import frc.robot.Constants.CanBusID;
@@ -85,7 +87,7 @@ public class Robot extends TimedRobot {
   private RelativeEncoder wristMotorEncoder;
   private double          wristMotorPosition;
 
-  // private double gyroAngle;
+  private Timer m_timer;
 
   // navX MXP using SPI AHRS;
   AHRS gyro = new AHRS(SPI.Port.kMXP);
@@ -121,6 +123,9 @@ public class Robot extends TimedRobot {
     // Set leftMotor2 to follow leftMotor1
     // Set rightMotor2 to follow rightMotor1
     
+    m_timer = new Timer();
+    m_timer.start(); // Start the timer when the robot initializes
+
     leftSimB.follow(leftSimA);
     rightSimB.follow(rightSimA);
 
@@ -246,6 +251,8 @@ public class Robot extends TimedRobot {
   @Override
   public void testInit() {
     System.out.println("Test Init function");
+    m_timer.reset(); // Reset the timer at the start of test mode
+    m_timer.start(); // Start the timer
   }
 
   /** This function is called periodically during test mode. */
@@ -278,7 +285,8 @@ public class Robot extends TimedRobot {
     SmartDashboard.putBoolean("Button 5", button5);
     SmartDashboard.putBoolean("Button 6", button6);
     
-
+    double elapsedTime = m_timer.get(); // Get the elapsed time in seconds
+    SmartDashboard.putNumber("Elapsed Time", elapsedTime);
   }
 
   /** This function is called once when the robot is first started up. */
