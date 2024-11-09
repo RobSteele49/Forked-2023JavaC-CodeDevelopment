@@ -248,6 +248,13 @@ public class Robot extends TimedRobot {
   public void disabledPeriodic() {}
 
   /** This function is called once when test mode is enabled. */
+
+  /*
+   * Initially test mode will be used to verify our code as we work to get everthing implemented.
+   * Once we get the robot code running we can start to use test mode as a way to verify the
+   * robot is working correctly.
+   */
+  
   @Override
   public void testInit() {
     System.out.println("Test Init function");
