@@ -9,11 +9,13 @@ import com.kauailabs.navx.frc.AHRS;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj.DriverStation;
 
 // never used import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.can.VictorSPX;
 
 import edu.wpi.first.util.sendable.SendableRegistry;
+// import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.SPI;
 import edu.wpi.first.wpilibj.Timer; // use timer for different modes
@@ -88,6 +90,16 @@ public class Robot extends TimedRobot {
   private double          wristMotorPosition;
 
   private Timer m_timer;
+  private double elapsedTime;
+
+  /*
+   * The isSimulation flag is set true if the robot code is running in simulation
+   * mode. This is set in the robotPerodic function.
+   */
+
+  private boolean isSimulation = false;
+
+  private double gyroAngle = 0.0;
 
   // navX MXP using SPI AHRS;
   AHRS gyro = new AHRS(SPI.Port.kMXP);
@@ -124,7 +136,7 @@ public class Robot extends TimedRobot {
     // Set rightMotor2 to follow rightMotor1
     
     m_timer = new Timer();
-    m_timer.start(); // Start the timer when the robot initializes
+    // m_timer.start(); // Start the timer when the robot initializes
 
     leftSimB.follow(leftSimA);
     rightSimB.follow(rightSimA);
@@ -150,13 +162,22 @@ public class Robot extends TimedRobot {
   @Override
   public void robotPeriodic() {
 
+    isSimulation = !DriverStation.isJoystickConnected(JoystickPortID.kArmJoystick);
+
     /*
      * Debugging the display of the angle by incrementing the gyroGetAngle by 0.01 each iteration.
      * Not sure if the code would look better if I used gyro.GetAngle() in the function
      * SmartDashboard class?
      */
-    
-    SmartDashboard.putNumber("Gyro Angle", gyro.getAngle());
+     
+     if (isSimulation) {
+      gyroAngle += 0.01;
+     } else {
+      gyroAngle = gyro.getAngle();
+     }
+     
+     SmartDashboard.putBoolean("isSimulation", isSimulation);
+     SmartDashboard.putNumber("Gyro Angle", gyroAngle);
 
   }
 
@@ -173,6 +194,10 @@ public class Robot extends TimedRobot {
   @Override
   public void autonomousInit() {
 
+    System.out.println("Autonomous Init function");
+    m_timer.reset(); // Reset the timer at the start of test mode
+    m_timer.start(); // Start the timer
+
     /*
      * These two statements seem like they don't need to both be there.
      */
@@ -186,6 +211,10 @@ public class Robot extends TimedRobot {
   /** This function is called periodically during autonomous. */
   @Override
   public void autonomousPeriodic() {
+
+    elapsedTime = m_timer.get(); // Get the elapsed time in seconds
+    SmartDashboard.putNumber("Elapsed Time", elapsedTime);
+
     switch (m_autoSelected) {
       case kRobAuto:
         break;
@@ -206,7 +235,11 @@ public class Robot extends TimedRobot {
 
   /** This function is called once when teleop is enabled. */
   @Override
-  public void teleopInit() {}
+  public void teleopInit() {
+    System.out.println("Teleop Init function");
+    m_timer.reset(); // Reset the timer at the start of test mode
+    m_timer.start(); // Start the timer
+  }
 
   /** This function is called periodically during operator control. */
   @Override
@@ -237,15 +270,23 @@ public class Robot extends TimedRobot {
     
     gripperMotor.set(gripperSpeed);
     SmartDashboard.putNumber("Gripper Speed", gripperSpeed);
+
+    elapsedTime = m_timer.get(); // Get the elapsed time in seconds
+    SmartDashboard.putNumber("Elapsed Time", elapsedTime);
   }
 
   /** This function is called once when the robot is disabled. */
   @Override
-  public void disabledInit() {}
+  public void disabledInit() {
+    System.out.println("Disabled Init function");
+    m_timer.reset(); // Reset the timer at the start of disabled mode
+  }
 
   /** This function is called periodically when disabled. */
   @Override
-  public void disabledPeriodic() {}
+  public void disabledPeriodic() {
+    SmartDashboard.putNumber("Elapsed Time", 0.0);
+  }
 
   /** This function is called once when test mode is enabled. */
 
@@ -273,26 +314,28 @@ public class Robot extends TimedRobot {
     wristMotorPosition   = wristMotorEncoder.getPosition();
     SmartDashboard.putNumber("Wrist Motor Position", wristMotorPosition);
 
-    button5 = m_controlStick.getRawButton(5);
-    button6 = m_controlStick.getRawButton(6);
+    if (!isSimulation) {
+      button5 = m_controlStick.getRawButton(5);
+      button6 = m_controlStick.getRawButton(6);
   
-    gripperSpeed = 0.0;
-    if (button5) {
-      gripperSpeed = Gripper.kGripperSpeed;
-    } else {
       gripperSpeed = 0.0;
-      if (button6) {
-        gripperSpeed = -Gripper.kGripperSpeed;
+      if (button5) {
+        gripperSpeed = Gripper.kGripperSpeed;
       } else {
         gripperSpeed = 0.0;
+        if (button6) {
+          gripperSpeed = -Gripper.kGripperSpeed;
+        } else {
+          gripperSpeed = 0.0;
+        }
       }
+
+      SmartDashboard.putNumber("Gripper Speed", gripperSpeed);
+      SmartDashboard.putBoolean("Button 5", button5);
+      SmartDashboard.putBoolean("Button 6", button6);
     }
 
-    SmartDashboard.putNumber("Gripper Speed", gripperSpeed);
-    SmartDashboard.putBoolean("Button 5", button5);
-    SmartDashboard.putBoolean("Button 6", button6);
-    
-    double elapsedTime = m_timer.get(); // Get the elapsed time in seconds
+    elapsedTime = m_timer.get(); // Get the elapsed time in seconds
     SmartDashboard.putNumber("Elapsed Time", elapsedTime);
   }
 
@@ -303,4 +346,6 @@ public class Robot extends TimedRobot {
   /** This function is called periodically whilst in simulation. */
   @Override
   public void simulationPeriodic() {}
+
 }
+
