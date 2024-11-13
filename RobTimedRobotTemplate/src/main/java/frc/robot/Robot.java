@@ -172,6 +172,9 @@ public class Robot extends TimedRobot {
      
      if (isSimulation) {
       gyroAngle += 0.01;
+      if (gyroAngle > 359.99) {
+        gyroAngle = 0.0;
+      }
      } else {
       gyroAngle = gyro.getAngle();
      }
@@ -244,8 +247,8 @@ public class Robot extends TimedRobot {
   /** This function is called periodically during operator control. */
   @Override
   public void teleopPeriodic() {
-    leftSpeed  = m_leftStick.getY(); // Get the Y axis value from the joystick
-    rightSpeed = m_rightStick.getY(); 
+    leftSpeed  = m_leftStick.getY()  * 0.1; // Get the Y axis value from the joystick
+    rightSpeed = m_rightStick.getY() * 0.1; 
 
     SmartDashboard.putNumber("Left Joystick", leftSpeed);
     SmartDashboard.putNumber("Right Joystick", rightSpeed);
