@@ -273,7 +273,7 @@ public class Robot extends TimedRobot {
     gripperMotor.set(gripperSpeed);
     SmartDashboard.putNumber("Gripper Speed", gripperSpeed);
 
-    System.out.println("gripperMotor Encoder:" + gripperMotor.getEncoder());
+    // cmd rejected System.out.println("gripperMotor Encoder:" + gripperMotor.getEncoder());
 
     elapsedTime = m_timer.get(); // Get the elapsed time in seconds
     SmartDashboard.putNumber("Elapsed Time", elapsedTime);
