@@ -15,7 +15,6 @@ import edu.wpi.first.wpilibj.DriverStation;
 import com.ctre.phoenix.motorcontrol.can.VictorSPX;
 
 import edu.wpi.first.util.sendable.SendableRegistry;
-// import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.SPI;
 import edu.wpi.first.wpilibj.Timer; // use timer for different modes
@@ -94,7 +93,8 @@ public class Robot extends TimedRobot {
 
   /*
    * The isSimulation flag is set true if the robot code is running in simulation
-   * mode. This is set in the robotPerodic function.
+   * mode. This is set in the robotPerodic function. This is set true if there are
+   * not any joysticks connected.
    */
 
   private boolean isSimulation = false;
@@ -124,20 +124,19 @@ public class Robot extends TimedRobot {
     rightSimA = new VictorSPX(CanBusID.kRightSimA);
     rightSimB = new VictorSPX(CanBusID.kRightSimB);
 
-    gripperMotor  = new CANSparkMax(CanBusID.kGripper, MotorType.kBrushed);
+    gripperMotor  = new CANSparkMax(CanBusID.kGripper,       MotorType.kBrushed);
     shoulderMotor = new CANSparkMax(CanBusID.kShoulderJoint, MotorType.kBrushless);
-    wristMotor    = new CANSparkMax(CanBusID.kWristJoint, MotorType.kBrushless);
+    wristMotor    = new CANSparkMax(CanBusID.kWristJoint,    MotorType.kBrushless);
 
     m_leftStick    = new Joystick(JoystickPortID.kLeftJoystick);
     m_rightStick   = new Joystick(JoystickPortID.kRightJoystick);
     m_controlStick = new Joystick(JoystickPortID.kArmJoystick);
 
+    m_timer = new Timer();
+
     // Set leftMotor2 to follow leftMotor1
     // Set rightMotor2 to follow rightMotor1
     
-    m_timer = new Timer();
-    // m_timer.start(); // Start the timer when the robot initializes
-
     leftSimB.follow(leftSimA);
     rightSimB.follow(rightSimA);
 
@@ -273,6 +272,8 @@ public class Robot extends TimedRobot {
     
     gripperMotor.set(gripperSpeed);
     SmartDashboard.putNumber("Gripper Speed", gripperSpeed);
+
+    System.out.println("gripperMotor Encoder:" + gripperMotor.getEncoder());
 
     elapsedTime = m_timer.get(); // Get the elapsed time in seconds
     SmartDashboard.putNumber("Elapsed Time", elapsedTime);
