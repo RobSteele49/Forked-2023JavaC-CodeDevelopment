@@ -12,8 +12,8 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.DriverStation;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
-import com.ctre.phoenix.motorcontrol.VictorSPXControlMode;
-import com.ctre.phoenix.motorcontrol.can.VictorSPX;
+// import com.ctre.phoenix.motorcontrol.VictorSPXControlMode;
+// import com.ctre.phoenix.motorcontrol.can.VictorSPX;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 
 import edu.wpi.first.util.sendable.SendableRegistry;
@@ -274,8 +274,13 @@ public class Robot extends TimedRobot {
   /** This function is called periodically during operator control. */
   @Override
   public void teleopPeriodic() {
-    leftSpeed  = m_leftStick.getY()  * 0.1; // Get the Y axis value from the joystick
-    rightSpeed = m_rightStick.getY() * 0.1; 
+    if (!isSimulation) {
+      leftSpeed  = m_leftStick.getY()  * 0.1; // Get the Y axis value from the joystick
+      rightSpeed = m_rightStick.getY() * 0.1;
+    } else {
+      leftSpeed = 0.0;
+      rightSpeed = 0.0;
+    }
 
     SmartDashboard.putNumber("Left Joystick", leftSpeed);
     SmartDashboard.putNumber("Right Joystick", rightSpeed);
@@ -283,8 +288,13 @@ public class Robot extends TimedRobot {
     leftSimA.set(ControlMode.PercentOutput,  leftSpeed); // Set the motor speed
     rightSimA.set(ControlMode.PercentOutput, rightSpeed); // set the motor speed
 
-    button5 = m_controlStick.getRawButton(5);
-    button6 = m_controlStick.getRawButton(6);
+    if (!isSimulation) {
+      button5 = m_controlStick.getRawButton(5);
+      button6 = m_controlStick.getRawButton(6);
+    } else {
+      button5 = false;
+      button6 = true;
+    }
   
     gripperSpeed = 0.0;
     if (button5) {
