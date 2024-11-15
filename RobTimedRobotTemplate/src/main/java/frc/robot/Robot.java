@@ -66,6 +66,8 @@ public class Robot extends TimedRobot {
 
   /*
    * These four private variables are for the 4 controllers for the base of the robot.
+   * The controllers are Talon SRX and currently (11/14/24) running an older version of
+   * software on board the controller.
    */
 
   private TalonSRX leftSimA;
@@ -116,12 +118,12 @@ public class Robot extends TimedRobot {
   @Override
   public void robotInit() {
     m_chooser.setDefaultOption("Default Auto", kDefaultAuto);
-    m_chooser.addOption("My Auto",  kCustomAuto);
-    m_chooser.addOption("Rob Auto", kRobAuto);
-    m_chooser.addOption("Leo Auto", kLeoAuto);
-    m_chooser.addOption("Gab Auto", kGabAuto);
-    m_chooser.addOption("Left Side", kLeftSide);
-    m_chooser.addOption("Right Side", kRightSide);
+    m_chooser.addOption("My Auto",             kCustomAuto);
+    m_chooser.addOption("Rob Auto",            kRobAuto);
+    m_chooser.addOption("Leo Auto",            kLeoAuto);
+    m_chooser.addOption("Gab Auto",            kGabAuto);
+    m_chooser.addOption("Left Side",           kLeftSide);
+    m_chooser.addOption("Right Side",          kRightSide);
 
     SmartDashboard.putData("Auto choices", m_chooser);
 
@@ -240,18 +242,20 @@ public class Robot extends TimedRobot {
         leftSpeed = 0.0;
         SmartDashboard.putNumber("Left Speed", leftSpeed);
         leftSimA.set(ControlMode.PercentOutput,  leftSpeed); // Set the motor speed
-        SmartDashboard.putNumber("left sim a device id: ", leftSimA.getDeviceID());
+        SmartDashboard.putNumber("left sim a device id: ",      leftSimA.getDeviceID());
         SmartDashboard.putNumber("left sim a firmware version", leftSimA.getFirmwareVersion());
-        SmartDashboard.putNumber("left sim a bus voltage: ", leftSimA.getBusVoltage());
-        SmartDashboard.putNumber("left sim b device id: ", leftSimB.getDeviceID());
+        SmartDashboard.putNumber("left sim a bus voltage: ",    leftSimA.getBusVoltage());
+        SmartDashboard.putNumber("left sim a percent output",   leftSimA.getMotorOutputPercent());
+        SmartDashboard.putNumber("left sim b device id: ",      leftSimB.getDeviceID());
+        SmartDashboard.putNumber("left sim b percent output",   leftSimB.getMotorOutputPercent());
         break;
       case kRightSide:
         rightSpeed = 0.0;
         SmartDashboard.putNumber("Right Speed", rightSpeed);
         rightSimA.set(ControlMode.PercentOutput, rightSpeed);
-        SmartDashboard.putNumber("left sim a device id: ", rightSimA.getDeviceID());
-        SmartDashboard.putNumber("left sim a xxx", rightSimA.getFirmwareVersion());
-        SmartDashboard.putNumber("left sim b device id: ", rightSimB.getDeviceID());
+        SmartDashboard.putNumber("right sim a device id: ",      rightSimA.getDeviceID());
+        SmartDashboard.putNumber("right sim a firmware version", rightSimA.getFirmwareVersion());
+        SmartDashboard.putNumber("right sim b device id: ",      rightSimB.getDeviceID());
         break;
       default:
         // Put default auto code here
