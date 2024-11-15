@@ -11,8 +11,10 @@ import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.DriverStation;
 
-// never used import com.ctre.phoenix.motorcontrol.ControlMode;
+import com.ctre.phoenix.motorcontrol.ControlMode;
+import com.ctre.phoenix.motorcontrol.VictorSPXControlMode;
 import com.ctre.phoenix.motorcontrol.can.VictorSPX;
+import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 
 import edu.wpi.first.util.sendable.SendableRegistry;
 import edu.wpi.first.wpilibj.Joystick;
@@ -46,7 +48,10 @@ public class Robot extends TimedRobot {
   private static final String kCustomAuto  = "My Auto";
   private static final String kRobAuto     = "Rob Auto";
   private static final String kLeoAuto     = "Leo Auto";
-  private static final String KGabAuto     = "Gab Auto";
+  private static final String kGabAuto     = "Gab Auto";
+  private static final String kLeftSide    = "Left Side";
+  private static final String kRightSide   = "Right Side";
+
 
   private String m_autoSelected;
   private final SendableChooser<String> m_chooser = new SendableChooser<>();
@@ -63,10 +68,10 @@ public class Robot extends TimedRobot {
    * These four private variables are for the 4 controllers for the base of the robot.
    */
 
-  private VictorSPX leftSimA;
-  private VictorSPX leftSimB;
-  private VictorSPX rightSimA;
-  private VictorSPX rightSimB;
+  private TalonSRX leftSimA;
+  private TalonSRX leftSimB;
+  private TalonSRX rightSimA;
+  private TalonSRX rightSimB;
 
   /*
    * These three private variables are for the 3 controllers for the arm.
@@ -114,15 +119,17 @@ public class Robot extends TimedRobot {
     m_chooser.addOption("My Auto",  kCustomAuto);
     m_chooser.addOption("Rob Auto", kRobAuto);
     m_chooser.addOption("Leo Auto", kLeoAuto);
-    m_chooser.addOption("Gab Auto", KGabAuto);
+    m_chooser.addOption("Gab Auto", kGabAuto);
+    m_chooser.addOption("Left Side", kLeftSide);
+    m_chooser.addOption("Right Side", kRightSide);
 
     SmartDashboard.putData("Auto choices", m_chooser);
 
-    leftSimA = new VictorSPX(CanBusID.kLeftSimA);
-    leftSimB = new VictorSPX(CanBusID.kLeftSimB);
+    leftSimA = new TalonSRX(CanBusID.kLeftSimA);
+    leftSimB = new TalonSRX(CanBusID.kLeftSimB);
 
-    rightSimA = new VictorSPX(CanBusID.kRightSimA);
-    rightSimB = new VictorSPX(CanBusID.kRightSimB);
+    rightSimA = new TalonSRX(CanBusID.kRightSimA);
+    rightSimB = new TalonSRX(CanBusID.kRightSimB);
 
     gripperMotor  = new CANSparkMax(CanBusID.kGripper,       MotorType.kBrushed);
     shoulderMotor = new CANSparkMax(CanBusID.kShoulderJoint, MotorType.kBrushless);
@@ -227,7 +234,24 @@ public class Robot extends TimedRobot {
         break;
       case kLeoAuto:
         break;
-      case KGabAuto:
+      case kGabAuto:
+        break;
+      case kLeftSide:
+        leftSpeed = 0.0;
+        SmartDashboard.putNumber("Left Speed", leftSpeed);
+        leftSimA.set(ControlMode.PercentOutput,  leftSpeed); // Set the motor speed
+        SmartDashboard.putNumber("left sim a device id: ", leftSimA.getDeviceID());
+        SmartDashboard.putNumber("left sim a firmware version", leftSimA.getFirmwareVersion());
+        SmartDashboard.putNumber("left sim a bus voltage: ", leftSimA.getBusVoltage());
+        SmartDashboard.putNumber("left sim b device id: ", leftSimB.getDeviceID());
+        break;
+      case kRightSide:
+        rightSpeed = 0.0;
+        SmartDashboard.putNumber("Right Speed", rightSpeed);
+        rightSimA.set(ControlMode.PercentOutput, rightSpeed);
+        SmartDashboard.putNumber("left sim a device id: ", rightSimA.getDeviceID());
+        SmartDashboard.putNumber("left sim a xxx", rightSimA.getFirmwareVersion());
+        SmartDashboard.putNumber("left sim b device id: ", rightSimB.getDeviceID());
         break;
       default:
         // Put default auto code here
@@ -252,8 +276,8 @@ public class Robot extends TimedRobot {
     SmartDashboard.putNumber("Left Joystick", leftSpeed);
     SmartDashboard.putNumber("Right Joystick", rightSpeed);
 
-    // leftSimA.set(ControlMode.PercentOutput,  leftSpeed); // Set the motor speed
-    // rightSimA.set(ControlMode.PercentOutput, rightSpeed); // set the motor speed
+    leftSimA.set(ControlMode.PercentOutput,  leftSpeed); // Set the motor speed
+    rightSimA.set(ControlMode.PercentOutput, rightSpeed); // set the motor speed
 
     button5 = m_controlStick.getRawButton(5);
     button6 = m_controlStick.getRawButton(6);
