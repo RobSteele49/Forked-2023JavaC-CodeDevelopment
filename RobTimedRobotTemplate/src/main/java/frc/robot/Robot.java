@@ -12,6 +12,11 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.DriverStation;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
+
+/*
+ * These two import are, as of 11/14/24, are not being used.
+ */
+
 // import com.ctre.phoenix.motorcontrol.VictorSPXControlMode;
 // import com.ctre.phoenix.motorcontrol.can.VictorSPX;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
@@ -28,6 +33,11 @@ import frc.robot.Constants.JoystickPortID;
 
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.RelativeEncoder;
+
+/*
+ * As of 11/15/24 the CANSparkLowLever is not used.
+ */
+
 // never used import com.revrobotics.CANSparkLowLevel;
 import com.revrobotics.CANSparkLowLevel.MotorType;
 // import edu.wpi.first.wpilibj.interfaces.Gyro;
@@ -41,7 +51,9 @@ import com.revrobotics.CANSparkLowLevel.MotorType;
 public class Robot extends TimedRobot {
 
   /*
-   * The first set of constants are for the autonomous functions
+   * The first set of constants are for the autonomous functions.
+   * Need to delete unused ones as we get close to having a finished
+   * program.
    */
 
   private static final String kDefaultAuto = "Default";
@@ -57,7 +69,7 @@ public class Robot extends TimedRobot {
   private final SendableChooser<String> m_chooser = new SendableChooser<>();
 
   /*
-   * These three private variables are for the three joysticks use for this robot
+   * These three private variables are for the three joysticks used for this robot
    */
 
   private Joystick m_leftStick;
@@ -83,17 +95,37 @@ public class Robot extends TimedRobot {
   private CANSparkMax shoulderMotor;
   private CANSparkMax wristMotor;
 
+  /*
+   * These two variables are used to record the joystick values. They range from
+   * -1 to +1 and are used directly for the speed of the motors.
+   */
+
   private double leftSpeed;
   private double rightSpeed;
+
+  /*
+   * These two variables are used to record the boolean values for the buttons.
+   * The button values are used to control the gripper.
+   */
 
   private boolean button5;
   private boolean button6;
   
   private double          gripperSpeed = 0.0;
+
+  /*
+   * These variables are used for the 2 DOF arm.
+   */
+
   private RelativeEncoder shoulderMotorEncoder;
   private double          shoulderMotorPosition;
   private RelativeEncoder wristMotorEncoder;
   private double          wristMotorPosition;
+
+  /*
+   * For debugging I'm using the variables for a timer. The same timer is used
+   * for all of th modes.
+   */
 
   private Timer m_timer;
   private double elapsedTime;
@@ -106,6 +138,11 @@ public class Robot extends TimedRobot {
 
   private boolean isSimulation = false;
 
+  /*
+   * This variable is used for the gyro angle. As of 11/15/24 the gryo angle is not
+   * updating on the drive tap of the user interface.
+   */
+
   private double gyroAngle = 0.0;
 
   // navX MXP using SPI AHRS;
@@ -113,8 +150,10 @@ public class Robot extends TimedRobot {
 
   /**
    * This function is run when the robot is first started up and should be used for any
-   * initialization code.
+   * initialization code. As of 11/15/24 the auto selection is not user selectable.
+   * Need to fix this.
    */
+
   @Override
   public void robotInit() {
     m_chooser.setDefaultOption("Default Auto", kDefaultAuto);
@@ -127,19 +166,35 @@ public class Robot extends TimedRobot {
 
     SmartDashboard.putData("Auto choices", m_chooser);
 
+    /*
+     * Set the 4 motor controllers to the correct controller type.
+     */
+
     leftSimA = new TalonSRX(CanBusID.kLeftSimA);
     leftSimB = new TalonSRX(CanBusID.kLeftSimB);
 
     rightSimA = new TalonSRX(CanBusID.kRightSimA);
     rightSimB = new TalonSRX(CanBusID.kRightSimB);
 
+    /*
+     * Set the 3 motors of the arm to the correct contrroller type.
+     */
+
     gripperMotor  = new CANSparkMax(CanBusID.kGripper,       MotorType.kBrushed);
     shoulderMotor = new CANSparkMax(CanBusID.kShoulderJoint, MotorType.kBrushless);
     wristMotor    = new CANSparkMax(CanBusID.kWristJoint,    MotorType.kBrushless);
 
+    /*
+     * Initialize the 3 joystics which are required to control the robot.
+     */
+
     m_leftStick    = new Joystick(JoystickPortID.kLeftJoystick);
     m_rightStick   = new Joystick(JoystickPortID.kRightJoystick);
     m_controlStick = new Joystick(JoystickPortID.kArmJoystick);
+
+    /*
+     * Instatiate a new timer, one time only.
+     */
 
     m_timer = new Timer();
 
@@ -156,6 +211,11 @@ public class Robot extends TimedRobot {
     rightSimA.setInverted(true);
     // rightSimB.setInverted(true); since rightSimB is following rightSimA I don't think I need the invert
 
+    /*
+     * This is intended to update the driver interface with the gryo. As of 11/15/24 this is
+     * not working.
+     */
+
     SendableRegistry.addLW(gyro, "Gyro");
 
   }
@@ -169,6 +229,12 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void robotPeriodic() {
+
+    /*
+     * Use the arm joystick, present or not present to set the simulation mode flag.
+     * By checking every time if the joystick is plugged in the simulation mode will
+     * be set to false.
+     */
 
     isSimulation = !DriverStation.isJoystickConnected(JoystickPortID.kArmJoystick);
 
@@ -187,6 +253,10 @@ public class Robot extends TimedRobot {
       gyroAngle = gyro.getAngle();
      }
      
+     /*
+      * Display the simulation mode flag and the gryo angle.
+      */
+
      SmartDashboard.putBoolean("isSimulation", isSimulation);
      SmartDashboard.putNumber("Gyro Angle", gyroAngle);
 
@@ -293,7 +363,7 @@ public class Robot extends TimedRobot {
       button6 = m_controlStick.getRawButton(6);
     } else {
       button5 = false;
-      button6 = true;
+      button6 = false;
     }
   
     gripperSpeed = 0.0;
@@ -311,8 +381,6 @@ public class Robot extends TimedRobot {
     gripperMotor.set(gripperSpeed);
     SmartDashboard.putNumber("Gripper Speed", gripperSpeed);
 
-    // cmd rejected System.out.println("gripperMotor Encoder:" + gripperMotor.getEncoder());
-
     elapsedTime = m_timer.get(); // Get the elapsed time in seconds
     SmartDashboard.putNumber("Elapsed Time", elapsedTime);
   }
@@ -322,6 +390,15 @@ public class Robot extends TimedRobot {
   public void disabledInit() {
     System.out.println("Disabled Init function");
     m_timer.reset(); // Reset the timer at the start of disabled mode
+
+    /*
+     * Rest the speeds of all the motors.
+     */
+
+    gripperSpeed = 0.0;
+    leftSpeed    = 0.0;
+    rightSpeed   = 0.0;
+
   }
 
   /** This function is called periodically when disabled. */
