@@ -358,6 +358,12 @@ public class Robot extends TimedRobot {
     leftSimA.set(ControlMode.PercentOutput,  leftSpeed); // Set the motor speed
     rightSimA.set(ControlMode.PercentOutput, rightSpeed); // set the motor speed
 
+    /*
+     * !isSimulation if this result is true, then we are running on a real robot.
+     * if isSimulation is true, then the joysticks are NOT present and we assume
+     * we are running in a simulation environment.
+     */
+    
     if (!isSimulation) {
       button5 = m_controlStick.getRawButton(5);
       button6 = m_controlStick.getRawButton(6);
