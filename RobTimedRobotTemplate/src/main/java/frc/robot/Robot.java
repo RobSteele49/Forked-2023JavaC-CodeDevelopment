@@ -397,6 +397,7 @@ public class Robot extends TimedRobot {
   public void disabledInit() {
     System.out.println("Disabled Init function");
     m_timer.reset(); // Reset the timer at the start of disabled mode
+    m_timer.start(); // Start the timer
 
     /*
      * Rest the speeds of all the motors.
@@ -411,7 +412,8 @@ public class Robot extends TimedRobot {
   /** This function is called periodically when disabled. */
   @Override
   public void disabledPeriodic() {
-    SmartDashboard.putNumber("Elapsed Time", 0.0);
+    elapsedTime = m_timer.get(); // Get the elapsed time in seconds
+    SmartDashboard.putNumber("Elapsed Time", elapsedTime);
   }
 
   /** This function is called once when test mode is enabled. */
