@@ -19,6 +19,7 @@ import com.ctre.phoenix.motorcontrol.ControlMode;
 
 // import com.ctre.phoenix.motorcontrol.VictorSPXControlMode;
 // import com.ctre.phoenix.motorcontrol.can.VictorSPX;
+
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 
 import edu.wpi.first.util.sendable.SendableRegistry;
@@ -39,7 +40,9 @@ import com.revrobotics.RelativeEncoder;
  */
 
 // never used import com.revrobotics.CANSparkLowLevel;
+
 import com.revrobotics.CANSparkLowLevel.MotorType;
+
 // import edu.wpi.first.wpilibj.interfaces.Gyro;
 
 /**
@@ -400,7 +403,7 @@ public class Robot extends TimedRobot {
     m_timer.start(); // Start the timer
 
     /*
-     * Rest the speeds of all the motors.
+     * Reset the speeds of all the motors.
      */
 
     gripperSpeed = 0.0;
