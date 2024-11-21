@@ -349,8 +349,13 @@ public class Robot extends TimedRobot {
   @Override
   public void teleopPeriodic() {
     if (!isSimulation) {
-      leftSpeed  = m_leftStick.getY()  * 0.1; // Get the Y axis value from the joystick
-      rightSpeed = m_rightStick.getY() * 0.1;
+
+      /*
+       * The speed of the left and right motors are taken directly from the joystick values.
+       */
+      
+      leftSpeed  = m_leftStick.getY(); // Get the Y axis value from the joystick
+      rightSpeed = m_rightStick.getY();
     } else {
       leftSpeed = 0.0;
       rightSpeed = 0.0;
