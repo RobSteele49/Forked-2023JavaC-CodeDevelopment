@@ -348,14 +348,33 @@ public class Robot extends TimedRobot {
   /** This function is called periodically during operator control. */
   @Override
   public void teleopPeriodic() {
+    double leftJoystickValue;
+    double rightJoystickValue;
+
     if (!isSimulation) {
 
       /*
        * The speed of the left and right motors are taken directly from the joystick values.
        */
+
+       /*
+        * Issue #15 has us adding a deadzone for each joystick. Since no value was provided
+        * will start with =/- 0.10.
+        */
       
-      leftSpeed  = m_leftStick.getY(); // Get the Y axis value from the joystick
-      rightSpeed = m_rightStick.getY();
+        leftJoystickValue = m_leftStick.getY();
+        rightJoystickValue = m_rightStick.getY();
+
+        if ((leftJoystickValue < 0.10) && (leftJoystickValue > -0.10)) {
+          leftJoystickValue = 0.0;
+        }
+
+        if ((rightJoystickValue < 0.10) && (rightJoystickValue > -0.10)) {
+          rightJoystickValue = 0.0;
+        }
+        
+      leftSpeed  = leftJoystickValue;
+      rightSpeed = rightJoystickValue;
     } else {
       leftSpeed = 0.0;
       rightSpeed = 0.0;
