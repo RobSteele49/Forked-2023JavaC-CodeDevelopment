@@ -302,6 +302,8 @@ public class Robot extends TimedRobot {
 
     switch (m_autoSelected) {
       case kRobAuto:
+        leftSpeed = 0;
+        rightSpeed = 0;
         break;
       case kCustomAuto:
         // Put custom auto code here
@@ -313,7 +315,7 @@ public class Robot extends TimedRobot {
       case kGabAuto:
         break;
       case kLeftSide:
-        leftSpeed = 0.0;
+        leftSpeed = 0.5;
         SmartDashboard.putNumber("Left Speed", leftSpeed);
         leftSimA.set(ControlMode.PercentOutput,  leftSpeed); // Set the motor speed
         SmartDashboard.putNumber("left sim a device id: ",      leftSimA.getDeviceID());
@@ -324,7 +326,7 @@ public class Robot extends TimedRobot {
         SmartDashboard.putNumber("left sim b percent output",   leftSimB.getMotorOutputPercent());
         break;
       case kRightSide:
-        rightSpeed = 0.0;
+        rightSpeed = 0.5;
         SmartDashboard.putNumber("Right Speed", rightSpeed);
         rightSimA.set(ControlMode.PercentOutput, rightSpeed);
         SmartDashboard.putNumber("right sim a device id: ",      rightSimA.getDeviceID());
@@ -333,6 +335,10 @@ public class Robot extends TimedRobot {
         break;
       default:
         // Put default auto code here
+        // Set motor speeds for the base to 0
+
+        leftSpeed = 0.0;
+        rightSpeed = 0.0;
         break;
     }
   }
