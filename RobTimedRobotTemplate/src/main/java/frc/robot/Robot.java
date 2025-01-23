@@ -478,7 +478,12 @@ public class Robot extends TimedRobot {
     if (!isSimulation) {
       button5 = m_controlStick.getRawButton(5);
       button6 = m_controlStick.getRawButton(6);
-  
+    } else {
+      button5 = false;
+      button6 = false;
+    }
+
+    if (!isSimulation) {
       gripperSpeed = 0.0;
       if (button5) {
         gripperSpeed = Gripper.kGripperSpeed;
@@ -491,6 +496,8 @@ public class Robot extends TimedRobot {
         }
       }
 
+      gripperMotor.set(gripperSpeed);
+      
       SmartDashboard.putNumber("Gripper Speed", gripperSpeed);
       SmartDashboard.putBoolean("Button 5", button5);
       SmartDashboard.putBoolean("Button 6", button6);
