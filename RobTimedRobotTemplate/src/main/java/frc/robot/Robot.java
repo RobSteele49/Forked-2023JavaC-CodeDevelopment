@@ -52,7 +52,11 @@ import com.revrobotics.CANSparkLowLevel.MotorType;
  * project.
  */
 
+import frc.robot.ArmControl; // Assuming your package name is "org.your.package" 
+
 public class Robot extends TimedRobot {
+
+    private ArmControl armControl;
 
   /*
    * The first set of constants are for the autonomous functions.
