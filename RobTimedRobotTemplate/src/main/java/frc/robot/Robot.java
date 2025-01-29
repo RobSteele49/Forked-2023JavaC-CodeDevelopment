@@ -33,13 +33,20 @@ import frc.robot.Constants.CanBusID;
 import frc.robot.Constants.JoystickPortID;
 
 import com.revrobotics.CANSparkMax;
+
+// On 1/28/25 Noticed I was using the Relative Encoder package. Need to test this
+// aginst the Absolute Encoder package.
+
 import com.revrobotics.RelativeEncoder;
+import com.revrobotics.AbsoluteEncoder; // Added this 1/28/25 for testing
 
 /*
  * As of 11/15/24 the CANSparkLowLever is not used.
  */
 
 // never used import com.revrobotics.CANSparkLowLevel;
+
+// 1/28/25 Not sure that this was not the import Gemini was looking to add.
 
 import com.revrobotics.CANSparkLowLevel.MotorType;
 
@@ -71,6 +78,8 @@ public class Robot extends TimedRobot {
   private static final String kGabAuto     = "Gab Auto";
   private static final String kLeftSide    = "Left Side";
   private static final String kRightSide   = "Right Side";
+  private static final String kRelative    = "Relative Encoder Testing";
+  private static final String kAbsolute    = "Absoluate Encoder Testing";
 
 
   private String m_autoSelected;
@@ -171,6 +180,8 @@ public class Robot extends TimedRobot {
     m_chooser.addOption("Gab Auto",            kGabAuto);
     m_chooser.addOption("Left Side",           kLeftSide);
     m_chooser.addOption("Right Side",          kRightSide);
+    m_chooser.addOption("Test Relative Encoder Values", kRelative);
+    m_chooser.addOption("Test Absolute Encoder Values", kAbsolute);
 
     SmartDashboard.putData("Auto choices", m_chooser);
 
@@ -336,6 +347,48 @@ public class Robot extends TimedRobot {
         SmartDashboard.putNumber("right sim a device id: ",      rightSimA.getDeviceID());
         SmartDashboard.putNumber("right sim a firmware version", rightSimA.getFirmwareVersion());
         SmartDashboard.putNumber("right sim b device id: ",      rightSimB.getDeviceID());
+        break;
+      case kAbsolute:
+        break;
+      case kRelative:
+        shoulderMotorEncoder  = shoulderMotor.getEncoder();
+        shoulderMotorPosition = shoulderMotorEncoder.getPosition();
+        SmartDashboard.putNumber("Shoulder Motor Position", shoulderMotorPosition);
+      
+        wristMotorEncoder    = wristMotor.getEncoder();
+        wristMotorPosition   = wristMotorEncoder.getPosition();
+        SmartDashboard.putNumber("Wrist Motor Position", wristMotorPosition);
+  
+        if (!isSimulation) {
+          button5 = m_controlStick.getRawButton(5);
+          button6 = m_controlStick.getRawButton(6);
+        } else {
+          button5 = false;
+          button6 = false;
+        }
+  
+        if (!isSimulation) {
+          gripperSpeed = 0.0;
+          if (button5) {
+            gripperSpeed = Gripper.kGripperSpeed;
+          } else {
+            gripperSpeed = 0.0;
+            if (button6) {
+              gripperSpeed = -Gripper.kGripperSpeed;
+            } else {
+              gripperSpeed = 0.0;
+            }
+          }
+  
+        gripperMotor.set(gripperSpeed);
+        
+        SmartDashboard.putNumber("Gripper Speed", gripperSpeed);
+        SmartDashboard.putBoolean("Button 5", button5);
+        SmartDashboard.putBoolean("Button 6", button6);
+      }
+  
+      elapsedTime = m_timer.get(); // Get the elapsed time in seconds
+      SmartDashboard.putNumber("Elapsed Time", elapsedTime);
         break;
       default:
         // Put default auto code here

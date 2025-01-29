@@ -1,3 +1,6 @@
+// Draft of ArmControl.java from the Gemini AI code.
+// The original imports from the Gemini AI code would not compile.
+
 package frc.robot;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
