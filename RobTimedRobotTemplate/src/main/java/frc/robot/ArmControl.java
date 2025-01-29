@@ -1,4 +1,5 @@
-// Draft of ArmControl.java from the Gemini AI code.
+// Filename: ArmControl.java
+// Mostly written by Gemini AI i/f with modification by Rob Steele and the team.
 // The original imports from the Gemini AI code would not compile.
 
 package frc.robot;

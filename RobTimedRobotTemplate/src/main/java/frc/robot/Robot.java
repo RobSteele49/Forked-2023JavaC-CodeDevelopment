@@ -1,3 +1,5 @@
+// Filename: Robot.java
+
 // Copyright (c) FIRST and other WPILib contributors.
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
@@ -139,6 +141,10 @@ public class Robot extends TimedRobot {
   private RelativeEncoder wristMotorEncoder;
   private double          wristMotorPosition;
 
+  private AbsoluteEncoder shoulderMotorAbsoluteEncoder;
+  private double          shoulderMotorAbsolutePosition;
+  private AbsoluteEncoder wristMotorAbsoluteEncoder;
+  private double          wristMotorAbsolutePosition;
   /*
    * For debugging I'm using the variables for a timer. The same timer is used
    * for all of th modes.
@@ -349,6 +355,14 @@ public class Robot extends TimedRobot {
         SmartDashboard.putNumber("right sim b device id: ",      rightSimB.getDeviceID());
         break;
       case kAbsolute:
+        
+        shoulderMotorAbsoluteEncoder = shoulderMotor.getAbsoluteEncoder();
+        shoulderMotorAbsolutePosition = shoulderMotorAbsoluteEncoder.getPosition();
+        SmartDashboard.putNumber("Shoulder Motor Position", shoulderMotorAbsolutePosition);
+      
+        wristMotorAbsoluteEncoder   = wristMotor.getAbsoluteEncoder();
+        wristMotorAbsolutePosition  = wristMotorAbsoluteEncoder.getPosition();
+        SmartDashboard.putNumber("Wrist Motor Position", wristMotorAbsolutePosition);
         break;
       case kRelative:
         shoulderMotorEncoder  = shoulderMotor.getEncoder();
@@ -359,6 +373,8 @@ public class Robot extends TimedRobot {
         wristMotorPosition   = wristMotorEncoder.getPosition();
         SmartDashboard.putNumber("Wrist Motor Position", wristMotorPosition);
   
+        // It appears that maybe the joysticks are disabled while in automode.
+
         if (!isSimulation) {
           button5 = m_controlStick.getRawButton(5);
           button6 = m_controlStick.getRawButton(6);
@@ -379,7 +395,7 @@ public class Robot extends TimedRobot {
               gripperSpeed = 0.0;
             }
           }
-  
+
         gripperMotor.set(gripperSpeed);
         
         SmartDashboard.putNumber("Gripper Speed", gripperSpeed);
