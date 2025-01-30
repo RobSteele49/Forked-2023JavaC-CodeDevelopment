@@ -30,14 +30,17 @@ import edu.wpi.first.wpilibj.SPI;
 import edu.wpi.first.wpilibj.Timer; // use timer for different modes
 
 // never used import edu.wpi.first.wpilibj.SPI.Port;
+
 import frc.robot.Constants.Gripper;
 import frc.robot.Constants.CanBusID;
 import frc.robot.Constants.JoystickPortID;
 
 import com.revrobotics.CANSparkMax;
 
-// On 1/28/25 Noticed I was using the Relative Encoder package. Need to test this
-// aginst the Absolute Encoder package.
+/*
+ * On 1/28/25 Noticed I was using the Relative Encoder package. Need to test this
+ * aginst the Absolute Encoder package.
+ */
 
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.AbsoluteEncoder; // Added this 1/28/25 for testing
@@ -82,7 +85,6 @@ public class Robot extends TimedRobot {
   private static final String kRightSide   = "Right Side";
   private static final String kRelative    = "Relative Encoder Testing";
   private static final String kAbsolute    = "Absoluate Encoder Testing";
-
 
   private String m_autoSelected;
   private final SendableChooser<String> m_chooser = new SendableChooser<>();
@@ -130,16 +132,17 @@ public class Robot extends TimedRobot {
   private boolean button5;
   private boolean button6;
   
-  private double          gripperSpeed = 0.0;
+  private double  gripperSpeed = 0.0;
 
   /*
-   * These variables are used for the 2 DOF arm.
+   * These variables are used for the 2 DOF arm. As of 1/29/25 I am experimenting
+   * with the absolute encoder.
    */
 
-  private RelativeEncoder shoulderMotorEncoder;
-  private double          shoulderMotorPosition;
-  private RelativeEncoder wristMotorEncoder;
-  private double          wristMotorPosition;
+  private RelativeEncoder shoulderMotorRelativeEncoder;
+  private double          shoulderMotorRelativePosition;
+  private RelativeEncoder wristMotorRelativeEncoder;
+  private double          wristMotorEncoderPosition;
 
   private AbsoluteEncoder shoulderMotorAbsoluteEncoder;
   private double          shoulderMotorAbsolutePosition;
@@ -147,19 +150,11 @@ public class Robot extends TimedRobot {
   private double          wristMotorAbsolutePosition;
   /*
    * For debugging I'm using the variables for a timer. The same timer is used
-   * for all of th modes.
+   * for all of the modes.
    */
 
   private Timer m_timer;
   private double elapsedTime;
-
-  /*
-   * The isSimulation flag is set true if the robot code is running in simulation
-   * mode. This is set in the robotPerodic function. This is set true if there are
-   * not any joysticks connected.
-   */
-
-  private boolean isSimulation = false;
 
   /*
    * This variable is used for the gyro angle. As of 11/15/24 the gryo angle is not
@@ -168,10 +163,13 @@ public class Robot extends TimedRobot {
 
   private double gyroAngle = 0.0;
 
-  // navX MXP using SPI AHRS;
+  /*
+   * navx MXP using SPI AHRS
+   */
+  
   AHRS gyro = new AHRS(SPI.Port.kMXP);
 
-  /**
+  /*
    * This function is run when the robot is first started up and should be used for any
    * initialization code. As of 11/15/24 the auto selection is not user selectable.
    * Need to fix this.
@@ -179,15 +177,15 @@ public class Robot extends TimedRobot {
 
   @Override
   public void robotInit() {
-    m_chooser.setDefaultOption("Default Auto", kDefaultAuto);
-    m_chooser.addOption("My Auto",             kCustomAuto);
-    m_chooser.addOption("Rob Auto",            kRobAuto);
-    m_chooser.addOption("Leo Auto",            kLeoAuto);
-    m_chooser.addOption("Gab Auto",            kGabAuto);
-    m_chooser.addOption("Left Side",           kLeftSide);
-    m_chooser.addOption("Right Side",          kRightSide);
-    m_chooser.addOption("Test Relative Encoder Values", kRelative);
-    m_chooser.addOption("Test Absolute Encoder Values", kAbsolute);
+    m_chooser.setDefaultOption("Default Auto",   kDefaultAuto);
+    m_chooser.addOption("My Auto",               kCustomAuto);
+    m_chooser.addOption("Rob Auto",              kRobAuto);
+    m_chooser.addOption("Leo Auto",              kLeoAuto);
+    m_chooser.addOption("Gab Auto",              kGabAuto);
+    m_chooser.addOption("Left Side",             kLeftSide);
+    m_chooser.addOption("Right Side",            kRightSide);
+    m_chooser.addOption("Test Relative Encoder", kRelative);
+    m_chooser.addOption("Test Absolute Encoder", kAbsolute);
 
     SmartDashboard.putData("Auto choices", m_chooser);
 
@@ -255,39 +253,17 @@ public class Robot extends TimedRobot {
   @Override
   public void robotPeriodic() {
 
-    /*
-     * Use the arm joystick, present or not present to set the simulation mode flag.
-     * By checking every time if the joystick is plugged in the simulation mode will
-     * be set to false.
-     */
-
-    isSimulation = !DriverStation.isJoystickConnected(JoystickPortID.kArmJoystick);
-
-    /*
-     * Debugging the display of the angle by incrementing the gyroGetAngle by 0.01 each iteration.
-     * Not sure if the code would look better if I used gyro.GetAngle() in the function
-     * SmartDashboard class?
-     */
+    gyroAngle = gyro.getAngle();
      
-     if (isSimulation) {
-      gyroAngle += 0.01;
-      if (gyroAngle > 359.99) {
-        gyroAngle = 0.0;
-      }
-     } else {
-      gyroAngle = gyro.getAngle();
-     }
-     
-     /*
-      * Display the simulation mode flag and the gryo angle.
-      */
+    /*
+     * Display the gryo angle.
+    */
 
-     SmartDashboard.putBoolean("isSimulation", isSimulation);
-     SmartDashboard.putNumber("Gyro Angle", gyroAngle);
+    SmartDashboard.putNumber("Gyro Angle", gyroAngle);
 
   }
 
-  /**
+  /*
    * This autonomous (along with the chooser code above) shows how to select between different
    * autonomous modes using the dashboard. The sendable chooser code works with the Java
    * SmartDashboard. If you prefer the LabVIEW Dashboard, remove all of the chooser code and
@@ -297,6 +273,7 @@ public class Robot extends TimedRobot {
    * below with additional strings. If using the SendableChooser make sure to add them to the
    * chooser code above as well.
    */
+
   @Override
   public void autonomousInit() {
 
@@ -363,48 +340,62 @@ public class Robot extends TimedRobot {
         wristMotorAbsoluteEncoder   = wristMotor.getAbsoluteEncoder();
         wristMotorAbsolutePosition  = wristMotorAbsoluteEncoder.getPosition();
         SmartDashboard.putNumber("Wrist Motor Position", wristMotorAbsolutePosition);
-        break;
-      case kRelative:
-        shoulderMotorEncoder  = shoulderMotor.getEncoder();
-        shoulderMotorPosition = shoulderMotorEncoder.getPosition();
-        SmartDashboard.putNumber("Shoulder Motor Position", shoulderMotorPosition);
-      
-        wristMotorEncoder    = wristMotor.getEncoder();
-        wristMotorPosition   = wristMotorEncoder.getPosition();
-        SmartDashboard.putNumber("Wrist Motor Position", wristMotorPosition);
-  
-        // It appears that maybe the joysticks are disabled while in automode.
 
-        if (!isSimulation) {
-          button5 = m_controlStick.getRawButton(5);
-          button6 = m_controlStick.getRawButton(6);
+        button5 = m_controlStick.getRawButton(5);
+        button6 = m_controlStick.getRawButton(6);
+
+        gripperSpeed = 0.0;
+        if (button5) {
+          gripperSpeed = Gripper.kGripperSpeed;
         } else {
-          button5 = false;
-          button6 = false;
-        }
-  
-        if (!isSimulation) {
           gripperSpeed = 0.0;
-          if (button5) {
-            gripperSpeed = Gripper.kGripperSpeed;
+          if (button6) {
+            gripperSpeed = -Gripper.kGripperSpeed;
           } else {
             gripperSpeed = 0.0;
-            if (button6) {
-              gripperSpeed = -Gripper.kGripperSpeed;
-            } else {
-              gripperSpeed = 0.0;
-            }
           }
+        }
 
         gripperMotor.set(gripperSpeed);
         
         SmartDashboard.putNumber("Gripper Speed", gripperSpeed);
         SmartDashboard.putBoolean("Button 5", button5);
         SmartDashboard.putBoolean("Button 6", button6);
-      }
   
-      elapsedTime = m_timer.get(); // Get the elapsed time in seconds
-      SmartDashboard.putNumber("Elapsed Time", elapsedTime);
+        elapsedTime = m_timer.get(); // Get the elapsed time in seconds
+        break;
+      case kRelative:
+        shoulderMotorRelativeEncoder  = shoulderMotor.getEncoder();
+        shoulderMotorRelativePosition = shoulderMotorRelativeEncoder.getPosition();
+        SmartDashboard.putNumber("Shoulder Motor Position", shoulderMotorRelativePosition);
+      
+        wristMotorRelativeEncoder    = wristMotor.getEncoder();
+        wristMotorEncoderPosition   = wristMotorRelativeEncoder.getPosition();
+        SmartDashboard.putNumber("Wrist Motor Position", wristMotorEncoderPosition);
+
+        button5 = m_controlStick.getRawButton(5);
+        button6 = m_controlStick.getRawButton(6);
+        
+        gripperSpeed = 0.0;
+        if (button5) {
+          gripperSpeed = Gripper.kGripperSpeed;
+        } else {
+          gripperSpeed = 0.0;
+          if (button6) {
+            gripperSpeed = -Gripper.kGripperSpeed;
+          } else {
+            gripperSpeed = 0.0;
+          }
+        }
+
+        gripperMotor.set(gripperSpeed);
+        
+        SmartDashboard.putNumber("Gripper Speed", gripperSpeed);
+        SmartDashboard.putBoolean("Button 5", button5);
+        SmartDashboard.putBoolean("Button 6", button6);
+  
+        elapsedTime = m_timer.get(); // Get the elapsed time in seconds
+        SmartDashboard.putNumber("Elapsed Time", elapsedTime);
         break;
       default:
         // Put default auto code here
@@ -424,40 +415,33 @@ public class Robot extends TimedRobot {
     m_timer.start(); // Start the timer
   }
 
-  /** This function is called periodically during operator control. */
+  /**
+   * This function is called periodically during operator control.
+   */
+  
   @Override
   public void teleopPeriodic() {
     double leftJoystickValue;
     double rightJoystickValue;
 
-    if (!isSimulation) {
-
-      /*
-       * The speed of the left and right motors are taken directly from the joystick values.
-       */
-
-       /*
-        * Issue #15 has us adding a deadzone for each joystick. Since no value was provided
-        * will start with =/- 0.10.
-        */
+    /*
+     * Issue #15 has us adding a deadzone for each joystick. Since no value was provided
+     * will start with =/- 0.10.
+     */
       
-        leftJoystickValue = m_leftStick.getY();
-        rightJoystickValue = m_rightStick.getY();
+    leftJoystickValue = m_leftStick.getY();
+    rightJoystickValue = m_rightStick.getY();
 
-        if ((leftJoystickValue < 0.10) && (leftJoystickValue > -0.10)) {
-          leftJoystickValue = 0.0;
-        }
-
-        if ((rightJoystickValue < 0.10) && (rightJoystickValue > -0.10)) {
-          rightJoystickValue = 0.0;
-        }
-        
-      leftSpeed  = leftJoystickValue;
-      rightSpeed = rightJoystickValue;
-    } else {
-      leftSpeed = 0.0;
-      rightSpeed = 0.0;
+    if ((leftJoystickValue < 0.10) && (leftJoystickValue > -0.10)) {
+      leftJoystickValue = 0.0;
     }
+
+    if ((rightJoystickValue < 0.10) && (rightJoystickValue > -0.10)) {
+      rightJoystickValue = 0.0;
+    }
+        
+    leftSpeed  = leftJoystickValue;
+    rightSpeed = rightJoystickValue;
 
     SmartDashboard.putNumber("Left Joystick", leftSpeed);
     SmartDashboard.putNumber("Right Joystick", rightSpeed);
@@ -465,20 +449,9 @@ public class Robot extends TimedRobot {
     leftSimA.set(ControlMode.PercentOutput,  leftSpeed); // Set the motor speed
     rightSimA.set(ControlMode.PercentOutput, rightSpeed); // set the motor speed
 
-    /*
-     * !isSimulation if this result is true, then we are running on a real robot.
-     * if isSimulation is true, then the joysticks are NOT present and we assume
-     * we are running in a simulation environment.
-     */
-    
-    if (!isSimulation) {
-      button5 = m_controlStick.getRawButton(5);
-      button6 = m_controlStick.getRawButton(6);
-    } else {
-      button5 = false;
-      button6 = false;
-    }
-  
+    button5 = m_controlStick.getRawButton(5);
+    button6 = m_controlStick.getRawButton(6);
+
     gripperSpeed = 0.0;
     if (button5) {
       gripperSpeed = Gripper.kGripperSpeed;
@@ -512,7 +485,6 @@ public class Robot extends TimedRobot {
     gripperSpeed = 0.0;
     leftSpeed    = 0.0;
     rightSpeed   = 0.0;
-
   }
 
   /** This function is called periodically when disabled. */
@@ -520,6 +492,14 @@ public class Robot extends TimedRobot {
   public void disabledPeriodic() {
     elapsedTime = m_timer.get(); // Get the elapsed time in seconds
     SmartDashboard.putNumber("Elapsed Time", elapsedTime);
+
+    /*
+     * Reset the speeds of all the motors.
+     */
+
+     gripperSpeed = 0.0;
+     leftSpeed    = 0.0;
+     rightSpeed   = 0.0;
   }
 
   /** This function is called once when test mode is enabled. */
@@ -540,41 +520,34 @@ public class Robot extends TimedRobot {
   /** This function is called periodically during test mode. */
   @Override
   public void testPeriodic() {
-    shoulderMotorEncoder  = shoulderMotor.getEncoder();
-    shoulderMotorPosition = shoulderMotorEncoder.getPosition();
-    SmartDashboard.putNumber("Shoulder Motor Position", shoulderMotorPosition);
+    shoulderMotorRelativeEncoder  = shoulderMotor.getEncoder();
+    shoulderMotorRelativePosition = shoulderMotorRelativeEncoder.getPosition();
+    SmartDashboard.putNumber("Shoulder Motor Position", shoulderMotorRelativePosition);
     
-    wristMotorEncoder    = wristMotor.getEncoder();
-    wristMotorPosition   = wristMotorEncoder.getPosition();
-    SmartDashboard.putNumber("Wrist Motor Position", wristMotorPosition);
+    wristMotorRelativeEncoder    = wristMotor.getEncoder();
+    wristMotorEncoderPosition   = wristMotorRelativeEncoder.getPosition();
+    SmartDashboard.putNumber("Wrist Motor Position", wristMotorEncoderPosition);
 
-    if (!isSimulation) {
-      button5 = m_controlStick.getRawButton(5);
-      button6 = m_controlStick.getRawButton(6);
+    button5 = m_controlStick.getRawButton(5);
+    button6 = m_controlStick.getRawButton(6);
+ 
+    gripperSpeed = 0.0;
+    if (button5) {
+      gripperSpeed = Gripper.kGripperSpeed;
     } else {
-      button5 = false;
-      button6 = false;
-    }
-
-    if (!isSimulation) {
       gripperSpeed = 0.0;
-      if (button5) {
-        gripperSpeed = Gripper.kGripperSpeed;
+      if (button6) {
+        gripperSpeed = -Gripper.kGripperSpeed;
       } else {
         gripperSpeed = 0.0;
-        if (button6) {
-          gripperSpeed = -Gripper.kGripperSpeed;
-        } else {
-          gripperSpeed = 0.0;
-        }
       }
-
-      gripperMotor.set(gripperSpeed);
-      
-      SmartDashboard.putNumber("Gripper Speed", gripperSpeed);
-      SmartDashboard.putBoolean("Button 5", button5);
-      SmartDashboard.putBoolean("Button 6", button6);
     }
+
+    gripperMotor.set(gripperSpeed);
+      
+    SmartDashboard.putNumber("Gripper Speed", gripperSpeed);
+    SmartDashboard.putBoolean("Button 5", button5);
+    SmartDashboard.putBoolean("Button 6", button6);
 
     elapsedTime = m_timer.get(); // Get the elapsed time in seconds
     SmartDashboard.putNumber("Elapsed Time", elapsedTime);
