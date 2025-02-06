@@ -73,7 +73,8 @@ public class Robot extends TimedRobot {
   /*
    * The first set of constants are for the autonomous functions.
    * Need to delete unused ones as we get close to having a finished
-   * program.
+   * program. Also, neee to look at moving these definitions into
+   * Constants.java.
    */
 
   private static final String kDefaultAuto = "Default";
@@ -85,6 +86,8 @@ public class Robot extends TimedRobot {
   private static final String kRightSide   = "Right Side";
   private static final String kRelative    = "Relative Encoder Testing";
   private static final String kAbsolute    = "Absoluate Encoder Testing";
+  private static final String kMoveShoulder = "Move Shoulder";
+  private static final String kMoveWrist    = "Move Wrist";
 
   private String m_autoSelected;
   private final SendableChooser<String> m_chooser = new SendableChooser<>();
@@ -132,7 +135,9 @@ public class Robot extends TimedRobot {
   private boolean button5;
   private boolean button6;
   
-  private double  gripperSpeed = 0.0;
+  private double gripperSpeed = 0.0;
+  private double shoulderSpeed = 0.0;
+  private double wristSpeed    = 0.0;
 
   /*
    * These variables are used for the 2 DOF arm. As of 1/29/25 I am experimenting
@@ -289,6 +294,26 @@ public class Robot extends TimedRobot {
     m_autoSelected = SmartDashboard.getString("Auto Selector", kDefaultAuto);
     
     System.out.println("Auto selected: " + m_autoSelected);
+
+    /*
+     * Setting the speeds of all of the motors to 0.
+     */
+    
+     leftSpeed     = 0.0;
+     rightSpeed    = 0.0;
+     gripperSpeed  = 0.0;
+     shoulderSpeed = 0.0;
+     wristSpeed    = 0.0;
+
+     gripperMotor.set(gripperSpeed);
+     shoulderMotor.set(shoulderSpeed);
+     wristMotor.set(wristSpeed);
+
+    leftSimA.set(ControlMode.PercentOutput,  leftSpeed); // Set the motor speed
+    rightSimA.set(ControlMode.PercentOutput, rightSpeed); // set the motor speed
+
+    leftSimB.set(ControlMode.PercentOutput,  leftSpeed); // Set the motor speed
+    rightSimB.set(ControlMode.PercentOutput, rightSpeed); // set the motor speed
   }
 
   /** This function is called periodically during autonomous. */
@@ -397,12 +422,45 @@ public class Robot extends TimedRobot {
         elapsedTime = m_timer.get(); // Get the elapsed time in seconds
         SmartDashboard.putNumber("Elapsed Time", elapsedTime);
         break;
+      /*
+       * For the case kShoulderJoint I'm going to move the shoulder joint for 5 seconds
+       * starting at elapsedTime 2 and stopping at elapsed time 7. Since the time is read
+       * at the start of the auto mode I'll use the variable elapsedTime which is displayed
+       * on the dashboard. Since I can't think of a good way to change the speed of the motor
+       * from the dashboard (a limitation of my dashboard knowledge) I'll just leave it
+       * to the users to change the code. The goal of this experiment will be to determine
+       * the polarity of the motor command to get a feel of the speed the commands generate.
+       */
+
+      case kMoveShoulder:
+        shoulderSpeed = 0.01;
+        if (elapsedTime > 2.0) {
+          shoulderMotor.set(shoulderSpeed);
+        }
+        if (elapsedTime > 7.0) {
+          shoulderSpeed = 0.0;
+          shoulderMotor.set(shoulderSpeed);
+        }
+        break;
+      case kMoveWrist:
+        wristSpeed = 0.01;
+        if (elapsedTime > 2.0) {
+          wristMotor.set(wristSpeed);
+        }
+        if (elapsedTime > 7.0) {
+          wristSpeed = 0.0;
+          wristMotor.set(wristSpeed);
+        }
+        break;
       default:
         // Put default auto code here
         // Set motor speeds for the base to 0
 
-        leftSpeed = 0.0;
-        rightSpeed = 0.0;
+        leftSpeed     = 0.0;
+        rightSpeed    = 0.0;
+        gripperSpeed  = 0.0;
+        shoulderSpeed = 0.0;
+        wristSpeed    = 0.0;
         break;
     }
   }
@@ -479,12 +537,24 @@ public class Robot extends TimedRobot {
     m_timer.start(); // Start the timer
 
     /*
-     * Reset the speeds of all the motors.
+     * Set the speeds of all the motors to 0.0.
      */
 
-    gripperSpeed = 0.0;
-    leftSpeed    = 0.0;
-    rightSpeed   = 0.0;
+    gripperSpeed  = 0.0;
+    leftSpeed     = 0.0;
+    rightSpeed    = 0.0;
+    shoulderSpeed = 0.0;
+    wristSpeed    = 0.0;
+
+    /*
+     * Not really sure if setting the motor speeds on the base to zero
+     * is necessary, will see if that is necessary.
+     */
+
+     gripperMotor.set(gripperSpeed);
+     shoulderMotor.set(shoulderSpeed);
+     wristMotor.set(wristSpeed);
+
   }
 
   /** This function is called periodically when disabled. */
@@ -497,9 +567,11 @@ public class Robot extends TimedRobot {
      * Reset the speeds of all the motors.
      */
 
-     gripperSpeed = 0.0;
-     leftSpeed    = 0.0;
-     rightSpeed   = 0.0;
+     gripperSpeed  = 0.0;
+     leftSpeed     = 0.0;
+     rightSpeed    = 0.0;
+     shoulderSpeed = 0.0;
+     wristSpeed    = 0.0;
   }
 
   /** This function is called once when test mode is enabled. */
@@ -524,8 +596,8 @@ public class Robot extends TimedRobot {
     shoulderMotorRelativePosition = shoulderMotorRelativeEncoder.getPosition();
     SmartDashboard.putNumber("Shoulder Motor Position", shoulderMotorRelativePosition);
     
-    wristMotorRelativeEncoder    = wristMotor.getEncoder();
-    wristMotorEncoderPosition   = wristMotorRelativeEncoder.getPosition();
+    wristMotorRelativeEncoder = wristMotor.getEncoder();
+    wristMotorEncoderPosition = wristMotorRelativeEncoder.getPosition();
     SmartDashboard.putNumber("Wrist Motor Position", wristMotorEncoderPosition);
 
     button5 = m_controlStick.getRawButton(5);
