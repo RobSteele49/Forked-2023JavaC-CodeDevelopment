@@ -392,6 +392,7 @@ public class Robot extends TimedRobot {
         elapsedTime = m_timer.get(); // Get the elapsed time in seconds
         break;
       case kRelative:
+
         shoulderMotorRelativeEncoder  = shoulderMotor.getEncoder();
         shoulderMotorRelativePosition = shoulderMotorRelativeEncoder.getPosition();
         SmartDashboard.putNumber("Shoulder Motor Position", shoulderMotorRelativePosition);
@@ -433,6 +434,19 @@ public class Robot extends TimedRobot {
        * from the dashboard (a limitation of my dashboard knowledge) I'll just leave it
        * to the users to change the code. The goal of this experiment will be to determine
        * the polarity of the motor command to get a feel of the speed the commands generate.
+       * 
+       * Supplying the shoulder motor with a negative speed command (-0.1) caused the motor to
+       * move in a postive direction, that is away from the initialization point and towards
+       * the floor. In the data collected from moving the shoulder manually the encoders
+       * move in a negative direction when moved the same way. Thus from the left side of the
+       * robot counter clockwise is negative for both the encoders and the motor commands.
+       * 
+       * Supplying the wrist motor with a positive speed command (0.1) caused the motor to
+       * move in a positive direction, that is away from the initialization point. In the
+       * data collection from moving the wrist manually the encoders moved in a positive
+       * direction.
+       * 
+       * This code will be much more useful if the encoder values are updated on the dashboard.
        */
 
       case kMoveShoulder:
@@ -442,6 +456,19 @@ public class Robot extends TimedRobot {
         }
         SmartDashboard.putNumber("shouldSpeed", shoulderSpeed);
         shoulderMotor.set(shoulderSpeed);
+
+        /*
+         * Get the absolute and relative encoder positions of the shoulder motor.
+         */
+
+        shoulderMotorAbsoluteEncoder = shoulderMotor.getAbsoluteEncoder();
+        shoulderMotorAbsolutePosition = shoulderMotorAbsoluteEncoder.getPosition();
+        SmartDashboard.putNumber("Shoulder Motor Position", shoulderMotorAbsolutePosition);
+
+        shoulderMotorRelativeEncoder  = shoulderMotor.getEncoder();
+        shoulderMotorRelativePosition = shoulderMotorRelativeEncoder.getPosition();
+        SmartDashboard.putNumber("Shoulder Motor Position", shoulderMotorRelativePosition);
+      
         break;
       case kMoveWrist:
         wristSpeed = 0.0;
@@ -450,6 +477,19 @@ public class Robot extends TimedRobot {
         }
         SmartDashboard.putNumber("wristSpeed", wristSpeed);
         wristMotor.set(wristSpeed);
+
+        /*
+         * Get the absolute and relative positions of the wrist motor.
+         */
+
+        wristMotorAbsoluteEncoder   = wristMotor.getAbsoluteEncoder();
+        wristMotorAbsolutePosition  = wristMotorAbsoluteEncoder.getPosition();
+        SmartDashboard.putNumber("Wrist Motor Position", wristMotorAbsolutePosition);
+
+        wristMotorRelativeEncoder    = wristMotor.getEncoder();
+        wristMotorEncoderPosition   = wristMotorRelativeEncoder.getPosition();
+        SmartDashboard.putNumber("Wrist Motor Position", wristMotorEncoderPosition);
+
         break;
       default:
         // Put default auto code here
