@@ -191,6 +191,8 @@ public class Robot extends TimedRobot {
     m_chooser.addOption("Right Side",            kRightSide);
     m_chooser.addOption("Test Relative Encoder", kRelative);
     m_chooser.addOption("Test Absolute Encoder", kAbsolute);
+    m_chooser.addOption("Move Shoulder",         kMoveShoulder);
+    m_chooser.addOption("Move Wrist",            kMoveWrist);
 
     SmartDashboard.putData("Auto choices", m_chooser);
 
@@ -422,6 +424,7 @@ public class Robot extends TimedRobot {
         elapsedTime = m_timer.get(); // Get the elapsed time in seconds
         SmartDashboard.putNumber("Elapsed Time", elapsedTime);
         break;
+
       /*
        * For the case kShoulderJoint I'm going to move the shoulder joint for 5 seconds
        * starting at elapsedTime 2 and stopping at elapsed time 7. Since the time is read
@@ -433,24 +436,20 @@ public class Robot extends TimedRobot {
        */
 
       case kMoveShoulder:
-        shoulderSpeed = 0.01;
-        if (elapsedTime > 2.0) {
-          shoulderMotor.set(shoulderSpeed);
+        shoulderSpeed = 0.0;
+        if (elapsedTime > 2.0 && elapsedTime < 7.0) {
+          shoulderSpeed = -0.1;
         }
-        if (elapsedTime > 7.0) {
-          shoulderSpeed = 0.0;
-          shoulderMotor.set(shoulderSpeed);
-        }
+        SmartDashboard.putNumber("shouldSpeed", shoulderSpeed);
+        shoulderMotor.set(shoulderSpeed);
         break;
       case kMoveWrist:
-        wristSpeed = 0.01;
-        if (elapsedTime > 2.0) {
-          wristMotor.set(wristSpeed);
+        wristSpeed = 0.0;
+        if (elapsedTime > 2.0 && elapsedTime < 3.0) {
+          wristSpeed = 0.1;
         }
-        if (elapsedTime > 7.0) {
-          wristSpeed = 0.0;
-          wristMotor.set(wristSpeed);
-        }
+        SmartDashboard.putNumber("wristSpeed", wristSpeed);
+        wristMotor.set(wristSpeed);
         break;
       default:
         // Put default auto code here
