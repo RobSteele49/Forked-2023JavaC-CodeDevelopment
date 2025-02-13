@@ -58,17 +58,25 @@ import com.revrobotics.CANSparkLowLevel.MotorType;
 // import edu.wpi.first.wpilibj.interfaces.Gyro;
 
 /**
- * The VM is configured to automatically run this class, and to call the functions corresponding to
- * each mode, as described in the TimedRobot documentation. If you change the name of this class or
- * the package after creating this project, you must also update the build.gradle file in the
- * project.
+ * The VM is configured to automatically run this class, and to call the functions
+ * corresponding to each mode, as described in the TimedRobot documentation.
+ * If you change the name of this class or the package after creating this project,
+ * you must also update the build.gradle file in the project.
  */
 
-import frc.robot.ArmControl; // Assuming your package name is "org.your.package" 
+ /*
+  * The two function ArmControl and ArmControl2 were written by Gemini.
+  * ArmControl is controlling the end effector.
+  * ArmControl2 is currently (2/12/25) is providing proportion control 
+  * around the encoder of the shoulder and wrist joint.
+  */
+
+// import frc.robot.ArmControl; // Assuming your package name is "org.your.package"
+// import frc.robot.ArmControl2;
 
 public class Robot extends TimedRobot {
 
-    private ArmControl armControl;
+    ArmControl2 armControl2 = new ArmControl2(0.01);
 
   /*
    * The first set of constants are for the autonomous functions.
@@ -88,6 +96,8 @@ public class Robot extends TimedRobot {
   private static final String kAbsolute    = "Absoluate Encoder Testing";
   private static final String kMoveShoulder = "Move Shoulder";
   private static final String kMoveWrist    = "Move Wrist";
+  private static final String kP10          = "Kp 10";
+  private static final String kP25          = "Kp 25";
 
   private String m_autoSelected;
   private final SendableChooser<String> m_chooser = new SendableChooser<>();
@@ -136,8 +146,6 @@ public class Robot extends TimedRobot {
   private boolean button6;
   
   private double gripperSpeed = 0.0;
-  private double shoulderSpeed = 0.0;
-  private double wristSpeed    = 0.0;
 
   /*
    * These variables are used for the 2 DOF arm. As of 1/29/25 I am experimenting
@@ -175,6 +183,17 @@ public class Robot extends TimedRobot {
   AHRS gyro = new AHRS(SPI.Port.kMXP);
 
   /*
+   * These variables are used in the control of the shoulder and wrist joints.
+   * Not sure if there is any really good reason for making these private
+   * but I'll continue in the practice.
+   */
+
+   private double desiredShoulderPosition = 0.0;
+   private double desiredWristPosition    = 0.0;
+   private double shoulderVelocity        = 0.0;
+   private double wristVelocity           = 0.0;
+
+  /*
    * This function is run when the robot is first started up and should be used for any
    * initialization code. As of 11/15/24 the auto selection is not user selectable.
    * Need to fix this.
@@ -193,6 +212,8 @@ public class Robot extends TimedRobot {
     m_chooser.addOption("Test Absolute Encoder", kAbsolute);
     m_chooser.addOption("Move Shoulder",         kMoveShoulder);
     m_chooser.addOption("Move Wrist",            kMoveWrist);
+    m_chooser.addOption("Kp 10",                 kP10);
+    m_chooser.addOption("Kp 25",                 kP25);
 
     SmartDashboard.putData("Auto choices", m_chooser);
 
@@ -276,7 +297,7 @@ public class Robot extends TimedRobot {
    * SmartDashboard. If you prefer the LabVIEW Dashboard, remove all of the chooser code and
    * uncomment the getString line to get the auto name from the text box below the Gyro
    *
-   * <p>You can add additional auto modes by adding additional comparisons to the switch structure
+   * You can add additional auto modes by adding additional comparisons to the switch structure
    * below with additional strings. If using the SendableChooser make sure to add them to the
    * chooser code above as well.
    */
@@ -301,21 +322,24 @@ public class Robot extends TimedRobot {
      * Setting the speeds of all of the motors to 0.
      */
     
-     leftSpeed     = 0.0;
-     rightSpeed    = 0.0;
-     gripperSpeed  = 0.0;
-     shoulderSpeed = 0.0;
-     wristSpeed    = 0.0;
+     leftSpeed        = 0.0;
+     rightSpeed       = 0.0;
+     gripperSpeed     = 0.0;
+     shoulderVelocity = 0.0;
+     wristVelocity    = 0.0;
 
      gripperMotor.set(gripperSpeed);
-     shoulderMotor.set(shoulderSpeed);
-     wristMotor.set(wristSpeed);
+     shoulderMotor.set(shoulderVelocity);
+     wristMotor.set(wristVelocity);
 
     leftSimA.set(ControlMode.PercentOutput,  leftSpeed); // Set the motor speed
     rightSimA.set(ControlMode.PercentOutput, rightSpeed); // set the motor speed
 
     leftSimB.set(ControlMode.PercentOutput,  leftSpeed); // Set the motor speed
     rightSimB.set(ControlMode.PercentOutput, rightSpeed); // set the motor speed
+
+    shoulderVelocity = 0.0;
+    wristVelocity    = 0.0;
   }
 
   /** This function is called periodically during autonomous. */
@@ -450,18 +474,18 @@ public class Robot extends TimedRobot {
        */
 
       case kMoveShoulder:
-        shoulderSpeed = 0.0;
+        shoulderVelocity = 0.0;
         if (elapsedTime > 2.0 && elapsedTime < 7.0) {
-          shoulderSpeed = -0.1;
+          shoulderVelocity = -0.1;
         }
-        SmartDashboard.putNumber("shouldSpeed", shoulderSpeed);
-        shoulderMotor.set(shoulderSpeed);
+        SmartDashboard.putNumber("shouldSpeed", shoulderVelocity);
+        shoulderMotor.set(shoulderVelocity);
 
         /*
          * Get the absolute and relative encoder positions of the shoulder motor.
          */
 
-        shoulderMotorAbsoluteEncoder = shoulderMotor.getAbsoluteEncoder();
+        shoulderMotorAbsoluteEncoder  = shoulderMotor.getAbsoluteEncoder();
         shoulderMotorAbsolutePosition = shoulderMotorAbsoluteEncoder.getPosition();
         SmartDashboard.putNumber("Shoulder Motor Position", shoulderMotorAbsolutePosition);
 
@@ -471,12 +495,12 @@ public class Robot extends TimedRobot {
       
         break;
       case kMoveWrist:
-        wristSpeed = 0.0;
+        wristVelocity = 0.0;
         if (elapsedTime > 2.0 && elapsedTime < 3.0) {
-          wristSpeed = 0.1;
+          wristVelocity = 0.1;
         }
-        SmartDashboard.putNumber("wristSpeed", wristSpeed);
-        wristMotor.set(wristSpeed);
+        SmartDashboard.putNumber("wristVelocity", wristVelocity);
+        wristMotor.set(wristVelocity);
 
         /*
          * Get the absolute and relative positions of the wrist motor.
@@ -486,20 +510,39 @@ public class Robot extends TimedRobot {
         wristMotorAbsolutePosition  = wristMotorAbsoluteEncoder.getPosition();
         SmartDashboard.putNumber("Wrist Motor Position", wristMotorAbsolutePosition);
 
-        wristMotorRelativeEncoder    = wristMotor.getEncoder();
+        wristMotorRelativeEncoder   = wristMotor.getEncoder();
         wristMotorEncoderPosition   = wristMotorRelativeEncoder.getPosition();
         SmartDashboard.putNumber("Wrist Motor Position", wristMotorEncoderPosition);
 
+        break;
+      case kP10:
+        desiredShoulderPosition = -10.0;
+        desiredWristPosition    =  10.0;
+
+        shoulderVelocity = armControl2.calculateShoulderVelocity(desiredShoulderPosition, shoulderMotorRelativeEncoder.getPosition());
+        wristVelocity    = armControl2.calculateWristVelocity(desiredWristPosition, wristMotorRelativeEncoder.getPosition());
+        shoulderMotor.set(shoulderVelocity); 
+        wristMotor.set(wristVelocity);
+        break;
+      case kP25:
+        desiredShoulderPosition = -25.0;
+        desiredWristPosition    =  25.0;
+
+        shoulderVelocity = armControl2.calculateShoulderVelocity(desiredShoulderPosition, shoulderMotorRelativeEncoder.getPosition());
+        wristVelocity    = armControl2.calculateWristVelocity(desiredWristPosition, wristMotorRelativeEncoder.getPosition());
+        shoulderMotor.set(shoulderVelocity); 
+        wristMotor.set(wristVelocity);
         break;
       default:
         // Put default auto code here
         // Set motor speeds for the base to 0
 
-        leftSpeed     = 0.0;
-        rightSpeed    = 0.0;
-        gripperSpeed  = 0.0;
-        shoulderSpeed = 0.0;
-        wristSpeed    = 0.0;
+        leftSpeed        = 0.0;
+        rightSpeed       = 0.0;
+        gripperSpeed     = 0.0;
+        shoulderVelocity = 0.0;
+        wristVelocity    = 0.0;
+
         break;
     }
   }
@@ -579,11 +622,11 @@ public class Robot extends TimedRobot {
      * Set the speeds of all the motors to 0.0.
      */
 
-    gripperSpeed  = 0.0;
-    leftSpeed     = 0.0;
-    rightSpeed    = 0.0;
-    shoulderSpeed = 0.0;
-    wristSpeed    = 0.0;
+    gripperSpeed     = 0.0;
+    leftSpeed        = 0.0;
+    rightSpeed       = 0.0;
+    shoulderVelocity = 0.0;
+    wristVelocity    = 0.0;
 
     /*
      * Not really sure if setting the motor speeds on the base to zero
@@ -591,8 +634,8 @@ public class Robot extends TimedRobot {
      */
 
      gripperMotor.set(gripperSpeed);
-     shoulderMotor.set(shoulderSpeed);
-     wristMotor.set(wristSpeed);
+     shoulderMotor.set(shoulderVelocity);
+     wristMotor.set(wristVelocity);
 
   }
 
@@ -606,11 +649,12 @@ public class Robot extends TimedRobot {
      * Reset the speeds of all the motors.
      */
 
-     gripperSpeed  = 0.0;
-     leftSpeed     = 0.0;
-     rightSpeed    = 0.0;
-     shoulderSpeed = 0.0;
-     wristSpeed    = 0.0;
+     gripperSpeed     = 0.0;
+     leftSpeed        = 0.0;
+     rightSpeed       = 0.0;
+     shoulderVelocity = 0.0;
+     wristVelocity    = 0.0;
+
   }
 
   /** This function is called once when test mode is enabled. */
