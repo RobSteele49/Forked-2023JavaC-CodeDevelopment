@@ -1,13 +1,13 @@
 
 package frc.robot;
 
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+// import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 // Import necessary libraries
 //import com.revrobotics.CANSparkMax;
 //import com.revrobotics.RelativeEncoder;
 
-import com.revrobotics.AbsoluteEncoder; // in my original code I was not using the absolute encoder
+// import com.revrobotics.AbsoluteEncoder; // in my original code I was not using the absolute encoder
 
 public class ArmControl2 {
 

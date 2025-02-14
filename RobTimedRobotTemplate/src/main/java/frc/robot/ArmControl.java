@@ -11,15 +11,15 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.RelativeEncoder;
 
-import com.revrobotics.AbsoluteEncoder; // in my original code I was not using the absolute encoder
+//import com.revrobotics.AbsoluteEncoder; // in my original code I was not using the absolute encoder
 
 // import com.revrobotics.*;
 
 public class ArmControl {
 
     // Motor objects (as defined in your code)
-    private CANSparkMax shoulderMotor;
-    private CANSparkMax wristMotor;
+    //private CANSparkMax shoulderMotor;
+    //private CANSparkMax wristMotor;
 
     // Motor encoders
     //private AbsoluteEncoder shoulderMotorEncoder;
@@ -30,17 +30,17 @@ public class ArmControl {
 
 
     // Constants (placeholders - you'll provide these next week)
-    private final double shoulderToWrist = 22.0; // inches
-    private final double wristToGripper = 26.0; // inches
-    private final double shoulderOffset = 0.0; // inches (placeholder)
-    private final double wristOffset = 0.0; // inches (placeholder)
-    private final double shoulderEncoderCountsPerRev = 0.0; // placeholder
-    private final double wristEncoderCountsPerRev = 0.0; // placeholder
+    //private final double shoulderToWrist = 22.0; // inches
+    //private final double wristToGripper = 26.0; // inches
+    //private final double shoulderOffset = 0.0; // inches (placeholder)
+    //private final double wristOffset = 0.0; // inches (placeholder)
+    //private final double shoulderEncoderCountsPerRev = 0.0; // placeholder
+    //private final double wristEncoderCountsPerRev = 0.0; // placeholder
 
     // Constructor
     public ArmControl(CANSparkMax shoulderMotor, CANSparkMax wristMotor) {
-        this.shoulderMotor = shoulderMotor;
-        this.wristMotor = wristMotor;
+        //this.shoulderMotor = shoulderMotor;
+        //this.wristMotor = wristMotor;
 
         this.shoulderMotorEncoder = shoulderMotor.getEncoder();
         this.wristMotorEncoder = wristMotor.getEncoder();

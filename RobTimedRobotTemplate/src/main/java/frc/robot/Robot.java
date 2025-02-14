@@ -6,12 +6,12 @@
 
 package frc.robot;
 
-import com.kauailabs.navx.frc.AHRS;
+//import com.kauailabs.navx.frc.AHRS;
 
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import edu.wpi.first.wpilibj.DriverStation;
+// NOT USED: import edu.wpi.first.wpilibj.DriverStation;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
 
@@ -24,9 +24,9 @@ import com.ctre.phoenix.motorcontrol.ControlMode;
 
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 
-import edu.wpi.first.util.sendable.SendableRegistry;
+//import edu.wpi.first.util.sendable.SendableRegistry;
 import edu.wpi.first.wpilibj.Joystick;
-import edu.wpi.first.wpilibj.SPI;
+//import edu.wpi.first.wpilibj.SPI;
 import edu.wpi.first.wpilibj.Timer; // use timer for different modes
 
 // never used import edu.wpi.first.wpilibj.SPI.Port;
@@ -85,15 +85,11 @@ public class Robot extends TimedRobot {
    * Constants.java.
    */
 
-  private static final String kDefaultAuto = "Default";
-  private static final String kCustomAuto  = "My Auto";
-  private static final String kRobAuto     = "Rob Auto";
-  private static final String kLeoAuto     = "Leo Auto";
-  private static final String kGabAuto     = "Gab Auto";
-  private static final String kLeftSide    = "Left Side";
-  private static final String kRightSide   = "Right Side";
-  private static final String kRelative    = "Relative Encoder Testing";
-  private static final String kAbsolute    = "Absoluate Encoder Testing";
+  private static final String kDefaultAuto  = "Default";
+  private static final String kLeftSide     = "Left Side";
+  private static final String kRightSide    = "Right Side";
+  private static final String kRelative     = "Relative Encoder Testing";
+  private static final String kAbsolute     = "Absoluate Encoder Testing";
   private static final String kMoveShoulder = "Move Shoulder";
   private static final String kMoveWrist    = "Move Wrist";
   private static final String kP10          = "Kp 10";
@@ -174,13 +170,13 @@ public class Robot extends TimedRobot {
    * updating on the drive tap of the user interface.
    */
 
-  private double gyroAngle = 0.0;
+  //private double gyroAngle = 0.0;
 
   /*
    * navx MXP using SPI AHRS
    */
   
-  AHRS gyro = new AHRS(SPI.Port.kMXP);
+  //AHRS gyro = new AHRS(SPI.Port.kMXP);
 
   /*
    * These variables are used in the control of the shoulder and wrist joints.
@@ -202,10 +198,6 @@ public class Robot extends TimedRobot {
   @Override
   public void robotInit() {
     m_chooser.setDefaultOption("Default Auto",   kDefaultAuto);
-    m_chooser.addOption("My Auto",               kCustomAuto);
-    m_chooser.addOption("Rob Auto",              kRobAuto);
-    m_chooser.addOption("Leo Auto",              kLeoAuto);
-    m_chooser.addOption("Gab Auto",              kGabAuto);
     m_chooser.addOption("Left Side",             kLeftSide);
     m_chooser.addOption("Right Side",            kRightSide);
     m_chooser.addOption("Test Relative Encoder", kRelative);
@@ -267,7 +259,7 @@ public class Robot extends TimedRobot {
      * not working.
      */
 
-    SendableRegistry.addLW(gyro, "Gyro");
+    //SendableRegistry.addLW(gyro, "Gyro");
 
   }
 
@@ -281,13 +273,13 @@ public class Robot extends TimedRobot {
   @Override
   public void robotPeriodic() {
 
-    gyroAngle = gyro.getAngle();
+    //gyroAngle = gyro.getAngle();
      
     /*
      * Display the gryo angle.
     */
 
-    SmartDashboard.putNumber("Gyro Angle", gyroAngle);
+    //SmartDashboard.putNumber("Gyro Angle", gyroAngle);
 
   }
 
@@ -305,7 +297,7 @@ public class Robot extends TimedRobot {
   @Override
   public void autonomousInit() {
 
-    System.out.println("Autonomous Init function");
+    System.out.println("Autonomous Init function newCode?");
     m_timer.reset(); // Reset the timer at the start of test mode
     m_timer.start(); // Start the timer
 
@@ -316,7 +308,7 @@ public class Robot extends TimedRobot {
     m_autoSelected = m_chooser.getSelected();
     m_autoSelected = SmartDashboard.getString("Auto Selector", kDefaultAuto);
     
-    System.out.println("Auto selected: " + m_autoSelected);
+    System.out.println("Auto selected newCode?: " + m_autoSelected);
 
     /*
      * Setting the speeds of all of the motors to 0.
@@ -350,21 +342,10 @@ public class Robot extends TimedRobot {
     SmartDashboard.putNumber("Elapsed Time", elapsedTime);
 
     switch (m_autoSelected) {
-      case kRobAuto:
-        leftSpeed = 0;
-        rightSpeed = 0;
-        break;
-      case kCustomAuto:
-        // Put custom auto code here
-        break;
       case kDefaultAuto:
         break;
-      case kLeoAuto:
-        break;
-      case kGabAuto:
-        break;
       case kLeftSide:
-        leftSpeed = 0.5;
+        leftSpeed = 0.0;
         SmartDashboard.putNumber("Left Speed", leftSpeed);
         leftSimA.set(ControlMode.PercentOutput,  leftSpeed); // Set the motor speed
         SmartDashboard.putNumber("left sim a device id: ",      leftSimA.getDeviceID());
@@ -375,7 +356,7 @@ public class Robot extends TimedRobot {
         SmartDashboard.putNumber("left sim b percent output",   leftSimB.getMotorOutputPercent());
         break;
       case kRightSide:
-        rightSpeed = 0.5;
+        rightSpeed = 0.0;
         SmartDashboard.putNumber("Right Speed", rightSpeed);
         rightSimA.set(ControlMode.PercentOutput, rightSpeed);
         SmartDashboard.putNumber("right sim a device id: ",      rightSimA.getDeviceID());
@@ -383,7 +364,6 @@ public class Robot extends TimedRobot {
         SmartDashboard.putNumber("right sim b device id: ",      rightSimB.getDeviceID());
         break;
       case kAbsolute:
-        
         shoulderMotorAbsoluteEncoder = shoulderMotor.getAbsoluteEncoder();
         shoulderMotorAbsolutePosition = shoulderMotorAbsoluteEncoder.getPosition();
         SmartDashboard.putNumber("Shoulder Motor Position", shoulderMotorAbsolutePosition);
@@ -416,7 +396,6 @@ public class Robot extends TimedRobot {
         elapsedTime = m_timer.get(); // Get the elapsed time in seconds
         break;
       case kRelative:
-
         shoulderMotorRelativeEncoder  = shoulderMotor.getEncoder();
         shoulderMotorRelativePosition = shoulderMotorRelativeEncoder.getPosition();
         SmartDashboard.putNumber("Shoulder Motor Position", shoulderMotorRelativePosition);
@@ -424,6 +403,9 @@ public class Robot extends TimedRobot {
         wristMotorRelativeEncoder    = wristMotor.getEncoder();
         wristMotorEncoderPosition   = wristMotorRelativeEncoder.getPosition();
         SmartDashboard.putNumber("Wrist Motor Position", wristMotorEncoderPosition);
+
+        System.out.println("Shoulder Position: " + shoulderMotorRelativePosition);
+        System.out.println("Wrist    Position: " + wristMotorRelativeEncoder);
 
         button5 = m_controlStick.getRawButton(5);
         button6 = m_controlStick.getRawButton(6);
@@ -521,8 +503,15 @@ public class Robot extends TimedRobot {
 
         shoulderVelocity = armControl2.calculateShoulderVelocity(desiredShoulderPosition, shoulderMotorRelativeEncoder.getPosition());
         wristVelocity    = armControl2.calculateWristVelocity(desiredWristPosition, wristMotorRelativeEncoder.getPosition());
-        shoulderMotor.set(shoulderVelocity); 
-        wristMotor.set(wristVelocity);
+
+        SmartDashboard.putNumber("Shoulder Motor Position", shoulderMotorRelativePosition);
+        SmartDashboard.putNumber("Wrist Motor Position", wristMotorEncoderPosition);
+
+        SmartDashboard.putNumber("shouldSpeed", shoulderVelocity);
+        SmartDashboard.putNumber("wristVelocity", wristVelocity);
+
+        // shoulderMotor.set(shoulderVelocity); 
+        // wristMotor.set(wristVelocity);
         break;
       case kP25:
         desiredShoulderPosition = -25.0;
@@ -530,8 +519,14 @@ public class Robot extends TimedRobot {
 
         shoulderVelocity = armControl2.calculateShoulderVelocity(desiredShoulderPosition, shoulderMotorRelativeEncoder.getPosition());
         wristVelocity    = armControl2.calculateWristVelocity(desiredWristPosition, wristMotorRelativeEncoder.getPosition());
-        shoulderMotor.set(shoulderVelocity); 
-        wristMotor.set(wristVelocity);
+
+        SmartDashboard.putNumber("Shoulder Motor Position", shoulderMotorRelativePosition);
+        SmartDashboard.putNumber("Wrist Motor Position", wristMotorEncoderPosition);
+
+        SmartDashboard.putNumber("shouldSpeed", shoulderVelocity);
+        SmartDashboard.putNumber("wristVelocity", wristVelocity);
+        // shoulderMotor.set(shoulderVelocity); 
+        // wristMotor.set(wristVelocity);
         break;
       default:
         // Put default auto code here
