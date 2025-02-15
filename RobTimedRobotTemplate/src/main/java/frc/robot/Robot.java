@@ -151,7 +151,7 @@ public class Robot extends TimedRobot {
   private RelativeEncoder shoulderMotorRelativeEncoder;
   private double          shoulderMotorRelativePosition;
   private RelativeEncoder wristMotorRelativeEncoder;
-  private double          wristMotorEncoderPosition;
+  private double          wristMotorRelativePosition;
 
   // private AbsoluteEncoder shoulderMotorAbsoluteEncoder;
   // private double          shoulderMotorAbsolutePosition;
@@ -337,6 +337,9 @@ public class Robot extends TimedRobot {
 
     shoulderVelocity = 0.0;
     wristVelocity    = 0.0;
+
+    shoulderMotorRelativePosition = 0.0;
+
   }
 
   /** This function is called periodically during autonomous. */
@@ -411,8 +414,8 @@ public class Robot extends TimedRobot {
         SmartDashboard.putNumber("Shoulder Motor Position", shoulderMotorRelativePosition);
       
         wristMotorRelativeEncoder    = wristMotor.getEncoder();
-        wristMotorEncoderPosition   = wristMotorRelativeEncoder.getPosition();
-        SmartDashboard.putNumber("Wrist Motor Position", wristMotorEncoderPosition);
+        wristMotorRelativePosition   = wristMotorRelativeEncoder.getPosition();
+        SmartDashboard.putNumber("Wrist Motor Position", wristMotorRelativePosition);
 
         System.out.println("Shoulder Position: " + shoulderMotorRelativePosition);
         System.out.println("Wrist    Position: " + wristMotorRelativeEncoder);
@@ -505,8 +508,8 @@ public class Robot extends TimedRobot {
         // SmartDashboard.putNumber("Wrist Motor Position", wristMotorAbsolutePosition);
 
         wristMotorRelativeEncoder   = wristMotor.getEncoder();
-        wristMotorEncoderPosition   = wristMotorRelativeEncoder.getPosition();
-        SmartDashboard.putNumber("Wrist Motor Position", wristMotorEncoderPosition);
+        wristMotorRelativePosition  = wristMotorRelativeEncoder.getPosition();
+        SmartDashboard.putNumber("Wrist Motor Position", wristMotorRelativePosition);
 
         break;
       case kP10:
@@ -515,16 +518,22 @@ public class Robot extends TimedRobot {
         desiredShoulderPosition = -10.0;
         desiredWristPosition    =  10.0;
 
+    
+        /*
         shoulderVelocity = armControlKp.calculateShoulderVelocity(
                             desiredShoulderPosition, shoulderMotorRelativeEncoder.getPosition());
         wristVelocity    = armControlKp.calculateWristVelocity(
                             desiredWristPosition, wristMotorRelativeEncoder.getPosition());
+        */
 
         SmartDashboard.putNumber("Shoulder Desired Position", desiredShoulderPosition);
         SmartDashboard.putNumber("Wrist Desired Position", desiredWristPosition);
 
         SmartDashboard.putNumber("Shoulder Motor Position", shoulderMotorRelativePosition);
-        SmartDashboard.putNumber("Wrist Motor Position", wristMotorEncoderPosition);
+        SmartDashboard.putNumber("Wrist Motor Position", wristMotorRelativePosition);
+
+        shoulderVelocity = 0.0;
+        wristVelocity = 0.0;
 
         SmartDashboard.putNumber("shoulderVelocity", shoulderVelocity);
         SmartDashboard.putNumber("wristVelocity", wristVelocity);
@@ -537,18 +546,23 @@ public class Robot extends TimedRobot {
         desiredShoulderPosition = -25.0;
         desiredWristPosition    =  25.0;
 
+        /*
         shoulderVelocity = armControlKp.calculateShoulderVelocity(
                             desiredShoulderPosition, shoulderMotorRelativeEncoder.getPosition());
         wristVelocity    = armControlKp.calculateWristVelocity(
                             desiredWristPosition, wristMotorRelativeEncoder.getPosition());
+        */
 
         SmartDashboard.putNumber("Shoulder Desired Position", desiredShoulderPosition);
         SmartDashboard.putNumber("Wrist Desired Position", desiredWristPosition);
 
         SmartDashboard.putNumber("Shoulder Motor Position", shoulderMotorRelativePosition);
-        SmartDashboard.putNumber("Wrist Motor Position", wristMotorEncoderPosition);
+        SmartDashboard.putNumber("Wrist Motor Position", wristMotorRelativePosition);
 
-        SmartDashboard.putNumber("shouldVelocity", shoulderVelocity);
+        shoulderVelocity = 0.0;
+        wristVelocity = 0.0;
+        
+        SmartDashboard.putNumber("shoulderVelocity", shoulderVelocity);
         SmartDashboard.putNumber("wristVelocity", wristVelocity);
 
         shoulderMotor.set(shoulderVelocity); 
@@ -702,8 +716,8 @@ public class Robot extends TimedRobot {
     SmartDashboard.putNumber("Shoulder Motor Position", shoulderMotorRelativePosition);
     
     wristMotorRelativeEncoder = wristMotor.getEncoder();
-    wristMotorEncoderPosition = wristMotorRelativeEncoder.getPosition();
-    SmartDashboard.putNumber("Wrist Motor Position", wristMotorEncoderPosition);
+    wristMotorRelativePosition = wristMotorRelativeEncoder.getPosition();
+    SmartDashboard.putNumber("Wrist Motor Position", wristMotorRelativePosition);
 
     button5 = m_controlStick.getRawButton(5);
     button6 = m_controlStick.getRawButton(6);
