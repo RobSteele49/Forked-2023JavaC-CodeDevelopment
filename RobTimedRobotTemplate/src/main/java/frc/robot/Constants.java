@@ -32,11 +32,11 @@ public class Constants {
      }
 
      /*
-      * Default speed +/- for the gripper
+      * Default Velocity +/- for the gripper
       */
 
       public static class Gripper {
-        public static final double kGripperSpeed = 0.5;
+        public static final double kGripperVelocity = 0.5;
       }
       
 }

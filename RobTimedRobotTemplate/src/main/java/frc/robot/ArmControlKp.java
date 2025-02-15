@@ -9,22 +9,24 @@ package frc.robot;
 
 // import com.revrobotics.AbsoluteEncoder; // in my original code I was not using the absolute encoder
 
-public class ArmControl2 {
+public class ArmControlKp {
 
     private double Kp; // Proportional gain
 
-    public ArmControl2 (double Kp) {
+    public ArmControlKp (double Kp) {
         this.Kp = Kp;
     }
 
-    public double calculateShoulderVelocity(double desiredShoulderPosition, double currentShoulderPosition) {
+    public double calculateShoulderVelocity(
+    double desiredShoulderPosition, double currentShoulderPosition) {
         double error = desiredShoulderPosition - currentShoulderPosition;
         double velocity = Kp * error; 
         velocity = Math.max(-0.1, Math.min(0.1, velocity)); // Limit velocity to +/- 0.1
         return velocity;
     }
 
-    public double calculateWristVelocity(double desiredWristPosition, double currentWristPosition) {
+    public double calculateWristVelocity(
+    double desiredWristPosition, double currentWristPosition) {
         double error = desiredWristPosition - currentWristPosition;
         double velocity = Kp * error;
         velocity = Math.max(-0.1, Math.min(0.1, velocity)); // Limit velocity to +/- 0.1
