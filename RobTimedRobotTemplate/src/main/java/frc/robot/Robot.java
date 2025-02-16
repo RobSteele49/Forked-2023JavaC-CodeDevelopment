@@ -4,9 +4,13 @@
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
 
+/*
+ * On 2/15/25 removing the references to absolute encoders.
+ */
+
 package frc.robot;
 
-//import com.kauailabs.navx.frc.AHRS;
+import com.kauailabs.navx.frc.AHRS;
 
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
@@ -24,9 +28,9 @@ import com.ctre.phoenix.motorcontrol.ControlMode;
 
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 
-//import edu.wpi.first.util.sendable.SendableRegistry;
+import edu.wpi.first.util.sendable.SendableRegistry;
 import edu.wpi.first.wpilibj.Joystick;
-//import edu.wpi.first.wpilibj.SPI;
+import edu.wpi.first.wpilibj.SPI;
 import edu.wpi.first.wpilibj.Timer; // use timer for different modes
 
 // never used import edu.wpi.first.wpilibj.SPI.Port;
@@ -34,16 +38,11 @@ import edu.wpi.first.wpilibj.Timer; // use timer for different modes
 import frc.robot.Constants.Gripper;
 import frc.robot.Constants.CanBusID;
 import frc.robot.Constants.JoystickPortID;
+import frc.robot.Constants.SimulationMode;
 
 import com.revrobotics.CANSparkMax;
 
-/*
- * On 1/28/25 Noticed I was using the Relative Encoder package. Need to test this
- * aginst the Absolute Encoder package.
- */
-
 import com.revrobotics.RelativeEncoder;
-// import com.revrobotics.AbsoluteEncoder; // Added this 1/28/25 for testing
 
 /*
  * As of 11/15/24 the CANSparkLowLever is not used.
@@ -89,7 +88,6 @@ public class Robot extends TimedRobot {
   private static final String kLeftSide     = "Left Side";
   private static final String kRightSide    = "Right Side";
   private static final String kRelative     = "Relative Encoder Testing";
-  // private static final String kAbsolute     = "Absoluate Encoder Testing";
   private static final String kMoveShoulder = "Move Shoulder";
   private static final String kMoveWrist    = "Move Wrist";
   private static final String kP10          = "Kp 10";
@@ -153,11 +151,6 @@ public class Robot extends TimedRobot {
   private RelativeEncoder wristMotorRelativeEncoder;
   private double          wristMotorRelativePosition;
 
-  // private AbsoluteEncoder shoulderMotorAbsoluteEncoder;
-  // private double          shoulderMotorAbsolutePosition;
-  // private AbsoluteEncoder wristMotorAbsoluteEncoder;
-  // private double          wristMotorAbsolutePosition;
-
   /*
    * For debugging I'm using the variables for a timer. The same timer is used
    * for all of the modes.
@@ -171,13 +164,13 @@ public class Robot extends TimedRobot {
    * updating on the drive tap of the user interface.
    */
 
-  //private double gyroAngle = 0.0;
+  private double gyroAngle = 0.0;
 
   /*
    * navx MXP using SPI AHRS
    */
   
-  //AHRS gyro = new AHRS(SPI.Port.kMXP);
+  AHRS gyro = new AHRS(SPI.Port.kMXP);
 
   /*
    * These variables are used in the control of the shoulder and wrist joints.
@@ -202,7 +195,6 @@ public class Robot extends TimedRobot {
     m_chooser.addOption("Left Side",             kLeftSide);
     m_chooser.addOption("Right Side",            kRightSide);
     m_chooser.addOption("Test Relative Encoder", kRelative);
-    // m_chooser.addOption("Test Absolute Encoder", kAbsolute);
     m_chooser.addOption("Move Shoulder",         kMoveShoulder);
     m_chooser.addOption("Move Wrist",            kMoveWrist);
     m_chooser.addOption("Kp 10",                 kP10);
@@ -260,7 +252,7 @@ public class Robot extends TimedRobot {
      * not working.
      */
 
-    //SendableRegistry.addLW(gyro, "Gyro");
+    SendableRegistry.addLW(gyro, "Gyro");
 
   }
 
@@ -274,13 +266,20 @@ public class Robot extends TimedRobot {
   @Override
   public void robotPeriodic() {
 
-    //gyroAngle = gyro.getAngle();
-     
+    if (SimulationMode.simulate) {
+      gyroAngle += 0.01;
+      if (gyroAngle > 359.99) {
+        gyroAngle = 0.0;
+      }
+    } else {
+      gyroAngle = gyro.getAngle();
+    }
+    
     /*
      * Display the gryo angle.
     */
 
-    //SmartDashboard.putNumber("Gyro Angle", gyroAngle);
+    SmartDashboard.putNumber("Gyro Angle", gyroAngle);
 
   }
 
@@ -319,9 +318,9 @@ public class Robot extends TimedRobot {
      * Setting the Velocitys of all of the motors to 0.
      */
     
-     leftVelocity        = 0.0;
-     rightVelocity       = 0.0;
-     gripperVelocity     = 0.0;
+     leftVelocity     = 0.0;
+     rightVelocity    = 0.0;
+     gripperVelocity  = 0.0;
      shoulderVelocity = 0.0;
      wristVelocity    = 0.0;
 
@@ -339,6 +338,7 @@ public class Robot extends TimedRobot {
     wristVelocity    = 0.0;
 
     shoulderMotorRelativePosition = 0.0;
+    wristMotorRelativePosition    = 0.0;
 
   }
 
@@ -374,38 +374,6 @@ public class Robot extends TimedRobot {
         SmartDashboard.putNumber("right sim a firmware version", rightSimA.getFirmwareVersion());
         SmartDashboard.putNumber("right sim b device id: ",      rightSimB.getDeviceID());
         break;
-      // case kAbsolute:
-      //   shoulderMotorAbsoluteEncoder = shoulderMotor.getAbsoluteEncoder();
-      //   shoulderMotorAbsolutePosition = shoulderMotorAbsoluteEncoder.getPosition();
-      //   SmartDashboard.putNumber("Shoulder Motor Position", shoulderMotorAbsolutePosition);
-      
-      //   wristMotorAbsoluteEncoder   = wristMotor.getAbsoluteEncoder();
-      //   wristMotorAbsolutePosition  = wristMotorAbsoluteEncoder.getPosition();
-      //   SmartDashboard.putNumber("Wrist Motor Position", wristMotorAbsolutePosition);
-
-      //   button5 = m_controlStick.getRawButton(5);
-      //   button6 = m_controlStick.getRawButton(6);
-
-      //   gripperVelocity = 0.0;
-      //   if (button5) {
-      //     gripperVelocity = Gripper.kGripperVelocity;
-      //   } else {
-      //     gripperVelocity = 0.0;
-      //     if (button6) {
-      //       gripperVelocity = -Gripper.kGripperVelocity;
-      //     } else {
-      //       gripperVelocity = 0.0;
-      //     }
-      //   }
-
-      //   gripperMotor.set(gripperVelocity);
-        
-      //   SmartDashboard.putNumber("Gripper Velocity", gripperVelocity);
-      //   SmartDashboard.putBoolean("Button 5", button5);
-      //   SmartDashboard.putBoolean("Button 6", button6);
-  
-      //   elapsedTime = m_timer.get(); // Get the elapsed time in seconds
-      //   break;
       case kRelative:
         SmartDashboard.putString("case:", "kRelative");
 
@@ -477,14 +445,6 @@ public class Robot extends TimedRobot {
         SmartDashboard.putNumber("shouldVelocity", shoulderVelocity);
         shoulderMotor.set(shoulderVelocity);
 
-        /*
-         * Get the absolute and relative encoder positions of the shoulder motor.
-         */
-
-        // shoulderMotorAbsoluteEncoder  = shoulderMotor.getAbsoluteEncoder();
-        // shoulderMotorAbsolutePosition = shoulderMotorAbsoluteEncoder.getPosition();
-        // SmartDashboard.putNumber("Shoulder Motor Position", shoulderMotorAbsolutePosition);
-
         shoulderMotorRelativeEncoder  = shoulderMotor.getEncoder();
         shoulderMotorRelativePosition = shoulderMotorRelativeEncoder.getPosition();
         SmartDashboard.putNumber("Shoulder Motor Position", shoulderMotorRelativePosition);
@@ -499,14 +459,6 @@ public class Robot extends TimedRobot {
         SmartDashboard.putNumber("wristVelocity", wristVelocity);
         wristMotor.set(wristVelocity);
 
-        /*
-         * Get the absolute and relative positions of the wrist motor.
-         */
-
-        // wristMotorAbsoluteEncoder   = wristMotor.getAbsoluteEncoder();
-        // wristMotorAbsolutePosition  = wristMotorAbsoluteEncoder.getPosition();
-        // SmartDashboard.putNumber("Wrist Motor Position", wristMotorAbsolutePosition);
-
         wristMotorRelativeEncoder   = wristMotor.getEncoder();
         wristMotorRelativePosition  = wristMotorRelativeEncoder.getPosition();
         SmartDashboard.putNumber("Wrist Motor Position", wristMotorRelativePosition);
@@ -518,13 +470,22 @@ public class Robot extends TimedRobot {
         desiredShoulderPosition = -10.0;
         desiredWristPosition    =  10.0;
 
-    
-        /*
-        shoulderVelocity = armControlKp.calculateShoulderVelocity(
-                            desiredShoulderPosition, shoulderMotorRelativeEncoder.getPosition());
-        wristVelocity    = armControlKp.calculateWristVelocity(
-                            desiredWristPosition, wristMotorRelativeEncoder.getPosition());
-        */
+        if (SimulationMode.simulate) { /* simulate the physics */
+          shoulderMotorRelativePosition += (shoulderVelocity * 0.050);
+          wristMotorRelativePosition    += (wristVelocity * 0.050);
+          shoulderVelocity = armControlKp.calculateShoulderVelocity(
+            desiredShoulderPosition, shoulderMotorRelativePosition);
+          wristVelocity = armControlKp.calculateWristVelocity(
+            desiredWristPosition, wristMotorRelativePosition);
+        } else { /* move the real motor */
+          shoulderVelocity = armControlKp.calculateShoulderVelocity(
+                              desiredShoulderPosition, shoulderMotorRelativeEncoder.getPosition());
+          wristVelocity    = armControlKp.calculateWristVelocity(
+                              desiredWristPosition, wristMotorRelativeEncoder.getPosition());
+
+          shoulderMotor.set(shoulderVelocity); 
+          wristMotor.set(wristVelocity);
+        }
 
         SmartDashboard.putNumber("Shoulder Desired Position", desiredShoulderPosition);
         SmartDashboard.putNumber("Wrist Desired Position", desiredWristPosition);
@@ -532,53 +493,53 @@ public class Robot extends TimedRobot {
         SmartDashboard.putNumber("Shoulder Motor Position", shoulderMotorRelativePosition);
         SmartDashboard.putNumber("Wrist Motor Position", wristMotorRelativePosition);
 
-        shoulderVelocity = 0.0;
-        wristVelocity = 0.0;
-
         SmartDashboard.putNumber("shoulderVelocity", shoulderVelocity);
         SmartDashboard.putNumber("wristVelocity", wristVelocity);
 
-        shoulderMotor.set(shoulderVelocity); 
-        wristMotor.set(wristVelocity);
+
         break;
       case kP25:
         SmartDashboard.putString("case:", "kP25");
         desiredShoulderPosition = -25.0;
         desiredWristPosition    =  25.0;
 
-        /*
-        shoulderVelocity = armControlKp.calculateShoulderVelocity(
-                            desiredShoulderPosition, shoulderMotorRelativeEncoder.getPosition());
-        wristVelocity    = armControlKp.calculateWristVelocity(
-                            desiredWristPosition, wristMotorRelativeEncoder.getPosition());
-        */
+        if (SimulationMode.simulate) { /* simulate the physics */
+          shoulderMotorRelativePosition += (shoulderVelocity * 0.050);
+          wristMotorRelativePosition    += (wristVelocity * 0.050);
+          shoulderVelocity = armControlKp.calculateShoulderVelocity(
+            desiredShoulderPosition, shoulderMotorRelativePosition);
+          wristVelocity = armControlKp.calculateWristVelocity(
+            desiredWristPosition, wristMotorRelativePosition);
+        } else { /* move the real motor */
+          shoulderVelocity = armControlKp.calculateShoulderVelocity(
+                             desiredShoulderPosition, shoulderMotorRelativeEncoder.getPosition());
+          wristVelocity    = armControlKp.calculateWristVelocity(
+                             desiredWristPosition, wristMotorRelativeEncoder.getPosition());
+
+          shoulderMotor.set(shoulderVelocity); 
+          wristMotor.set(wristVelocity);
+        }
 
         SmartDashboard.putNumber("Shoulder Desired Position", desiredShoulderPosition);
         SmartDashboard.putNumber("Wrist Desired Position", desiredWristPosition);
 
         SmartDashboard.putNumber("Shoulder Motor Position", shoulderMotorRelativePosition);
         SmartDashboard.putNumber("Wrist Motor Position", wristMotorRelativePosition);
-
-        shoulderVelocity = 0.0;
-        wristVelocity = 0.0;
         
         SmartDashboard.putNumber("shoulderVelocity", shoulderVelocity);
         SmartDashboard.putNumber("wristVelocity", wristVelocity);
 
-        shoulderMotor.set(shoulderVelocity); 
-        wristMotor.set(wristVelocity);
         break;
       default:
         SmartDashboard.putString("case:", "default");
         // Put default auto code here
         // Set motor Velocitys for the base to 0
 
-        leftVelocity        = 0.0;
-        rightVelocity       = 0.0;
-        gripperVelocity     = 0.0;
+        leftVelocity     = 0.0;
+        rightVelocity    = 0.0;
+        gripperVelocity  = 0.0;
         shoulderVelocity = 0.0;
         wristVelocity    = 0.0;
-
         break;
     }
   }

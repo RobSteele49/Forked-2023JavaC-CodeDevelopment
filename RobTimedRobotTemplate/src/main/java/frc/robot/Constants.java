@@ -38,5 +38,15 @@ public class Constants {
       public static class Gripper {
         public static final double kGripperVelocity = 0.5;
       }
+
+      /*
+       * Will see about having this variable explicitely set to true
+       * for simulation mode. Will need to set false for the real
+       * robot.
+       */
+
+      public static class SimulationMode {
+        public static Boolean simulate = true;
+      }
       
 }
