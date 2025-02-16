@@ -619,9 +619,9 @@ public class Robot extends TimedRobot {
      * Set the Velocitys of all the motors to 0.0.
      */
 
-    gripperVelocity     = 0.0;
-    leftVelocity        = 0.0;
-    rightVelocity       = 0.0;
+    gripperVelocity  = 0.0;
+    leftVelocity     = 0.0;
+    rightVelocity    = 0.0;
     shoulderVelocity = 0.0;
     wristVelocity    = 0.0;
 
@@ -646,12 +646,11 @@ public class Robot extends TimedRobot {
      * Reset the Velocitys of all the motors.
      */
 
-     gripperVelocity     = 0.0;
-     leftVelocity        = 0.0;
-     rightVelocity       = 0.0;
+     gripperVelocity  = 0.0;
+     leftVelocity     = 0.0;
+     rightVelocity    = 0.0;
      shoulderVelocity = 0.0;
      wristVelocity    = 0.0;
-
   }
 
   /** This function is called once when test mode is enabled. */
