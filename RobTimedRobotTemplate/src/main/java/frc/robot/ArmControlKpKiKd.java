@@ -11,7 +11,7 @@ public class ArmControlKpKiKd {
     private double previousShoulderError; 
     private double previousWristError; 
 
-    public ArmControl(double Kp, double Ki, double Kd) {
+    public ArmControlKpKiKd(double Kp, double Ki, double Kd) {
         this.Kp = Kp;
         this.Ki = Ki;
         this.Kd = Kd;

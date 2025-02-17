@@ -75,7 +75,8 @@ import com.revrobotics.CANSparkLowLevel.MotorType;
 
 public class Robot extends TimedRobot {
 
-    private ArmControlKp armControlKp = new ArmControlKp(0.01);
+    private ArmControlKp     armControlKp  = new ArmControlKp(0.01);
+    private ArmControlKpKiKd armControlPID = new ArmControlKpKiKd(0.01, 0.001, 0.00);
 
   /*
    * The first set of constants are for the autonomous functions.
@@ -92,6 +93,7 @@ public class Robot extends TimedRobot {
   private static final String kMoveWrist    = "Move Wrist";
   private static final String kP10          = "Kp 10";
   private static final String kP25          = "Kp 25";
+  private static final String kPID25        = "PID 25";
 
   private String m_autoSelected;
   private final SendableChooser<String> m_chooser = new SendableChooser<>();
@@ -199,6 +201,7 @@ public class Robot extends TimedRobot {
     m_chooser.addOption("Move Wrist",            kMoveWrist);
     m_chooser.addOption("Kp 10",                 kP10);
     m_chooser.addOption("Kp 25",                 kP25);
+    m_chooser.addOption("PID 25",                kPID25);
 
     SmartDashboard.putData("Auto choices", m_chooser);
 
@@ -496,7 +499,6 @@ public class Robot extends TimedRobot {
         SmartDashboard.putNumber("shoulderVelocity", shoulderVelocity);
         SmartDashboard.putNumber("wristVelocity", wristVelocity);
 
-
         break;
       case kP25:
         SmartDashboard.putString("case:", "kP25");
@@ -530,7 +532,41 @@ public class Robot extends TimedRobot {
         SmartDashboard.putNumber("wristVelocity", wristVelocity);
 
         break;
-      default:
+      case kPID25:
+        SmartDashboard.putString("case:", "PID 25");
+
+        desiredShoulderPosition = -25.0;
+        desiredWristPosition    =  25.0;
+
+        if (SimulationMode.simulate) { /* simulate the physics */
+          shoulderMotorRelativePosition += (shoulderVelocity * 0.050);
+          wristMotorRelativePosition    += (wristVelocity * 0.050);
+          shoulderVelocity = armControlPID.calculateShoulderVelocity(
+            desiredShoulderPosition, shoulderMotorRelativePosition);
+          wristVelocity = armControlPID.calculateWristVelocity(
+            desiredWristPosition, wristMotorRelativePosition);
+        } else { /* move the real motor */
+          shoulderVelocity = armControlPID.calculateShoulderVelocity(
+                              desiredShoulderPosition, shoulderMotorRelativeEncoder.getPosition());
+          wristVelocity    = armControlPID.calculateWristVelocity(
+                              desiredWristPosition, wristMotorRelativeEncoder.getPosition());
+
+          shoulderMotor.set(shoulderVelocity); 
+          wristMotor.set(wristVelocity);
+        }
+
+        SmartDashboard.putNumber("Shoulder Desired Position", desiredShoulderPosition);
+        SmartDashboard.putNumber("Wrist Desired Position", desiredWristPosition);
+
+        SmartDashboard.putNumber("Shoulder Motor Position", shoulderMotorRelativePosition);
+        SmartDashboard.putNumber("Wrist Motor Position", wristMotorRelativePosition);
+
+        SmartDashboard.putNumber("shoulderVelocity", shoulderVelocity);
+        SmartDashboard.putNumber("wristVelocity", wristVelocity);
+
+
+        break;
+      default:  
         SmartDashboard.putString("case:", "default");
         // Put default auto code here
         // Set motor Velocitys for the base to 0
