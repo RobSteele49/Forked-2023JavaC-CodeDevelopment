@@ -76,7 +76,7 @@ import com.revrobotics.CANSparkLowLevel.MotorType;
 public class Robot extends TimedRobot {
 
     private ArmControlKp     armControlKp  = new ArmControlKp(0.01);
-    private ArmControlKpKiKd armControlPID = new ArmControlKpKiKd(0.01, 0.001, 0.00);
+    // private ArmControlKpKiKd armControlPID = new ArmControlKpKiKd(0.01, 0.001, 0.00);
 
   /*
    * The first set of constants are for the autonomous functions.
@@ -538,14 +538,15 @@ public class Robot extends TimedRobot {
         desiredShoulderPosition = -25.0;
         desiredWristPosition    =  25.0;
 
-        if (SimulationMode.simulate) { /* simulate the physics */
+        /*
+        if (SimulationMode.simulate) { // simulate the physics
           shoulderMotorRelativePosition += (shoulderVelocity * 0.050);
           wristMotorRelativePosition    += (wristVelocity * 0.050);
           shoulderVelocity = armControlPID.calculateShoulderVelocity(
             desiredShoulderPosition, shoulderMotorRelativePosition);
           wristVelocity = armControlPID.calculateWristVelocity(
             desiredWristPosition, wristMotorRelativePosition);
-        } else { /* move the real motor */
+        } else { // move the real motor
           shoulderVelocity = armControlPID.calculateShoulderVelocity(
                               desiredShoulderPosition, shoulderMotorRelativeEncoder.getPosition());
           wristVelocity    = armControlPID.calculateWristVelocity(
@@ -563,7 +564,7 @@ public class Robot extends TimedRobot {
 
         SmartDashboard.putNumber("shoulderVelocity", shoulderVelocity);
         SmartDashboard.putNumber("wristVelocity", wristVelocity);
-
+        */
 
         break;
       default:  
