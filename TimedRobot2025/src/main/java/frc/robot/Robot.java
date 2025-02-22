@@ -4,9 +4,7 @@
 
 package frc.robot;
 
-import org.opencv.videoio.VideoCapture;
-
-import edu.wpi.first.cscore.UsbCamera;
+import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -18,33 +16,36 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
  */
 public class Robot extends TimedRobot {
 
-  /*
-   * These were also suggested by Gemini for support of the USB00 camera. 
-   */
-
-  private UsbCamera camera;
-  private VideoCapture cvCapture;
-
   private static final String kDefaultAuto = "Default";
   private static final String kCustomAuto = "My Auto";
-  private String m_autoSelected;
-  private final SendableChooser<String> m_chooser = new SendableChooser<>();
-
+  private static final String kP10        = "Kp 10";
+  private SendableChooser<String> autoChooser;
+  private String selectedAuto;
   /**
    * This function is run when the robot is first started up and should be used for any
    * initialization code.
    */
   public Robot() {
 
-    // Method 1: Using UsbCamera (Recommended)
-    camera = new UsbCamera("MyCamera", 0); // "MyCamera" is the name, 0 is the camera index
-    camera.setResolution(320, 240); // Set desired resolution (optional)
-    camera.setFPS(15); // Set desired FPS (optional)
-    // camera.startAutomaticCapture(); // Start capturing video
+    //autoChooser.setDefaultOption("Default Auto", kDefaultAuto);
+    //autoChooser.addOption("My Auto", kCustomAuto);
+    //autoChooser.addOption("Kp 10", kP10);
+    //SmartDashboard.putData("Auto choices", autoChooser);
+  
+  }
 
-    m_chooser.setDefaultOption("Default Auto", kDefaultAuto);
-    m_chooser.addOption("My Auto", kCustomAuto);
-    SmartDashboard.putData("Auto choices", m_chooser);
+  @Override
+  public void robotInit() {
+    
+    // 1. Create the Chooser:
+    autoChooser = new SendableChooser<>();
+
+    // 2. Add Options (Crucial):
+    autoChooser.setDefaultOption("Do Nothing", "DoNothing"); // A default is good practice
+    autoChooser.addOption("My Auto Routine 1", "Auto1"); // Add your routines
+    autoChooser.addOption("My Auto Routine 2", "Auto2"); // ... add more options as needed
+    // 3. Put Chooser on SmartDashboard (Absolutely Essential):
+    SmartDashboard.putData("Autonomous Choices", autoChooser); 
   }
 
   /**
@@ -63,23 +64,25 @@ public class Robot extends TimedRobot {
    * SmartDashboard. If you prefer the LabVIEW Dashboard, remove all of the chooser code and
    * uncomment the getString line to get the auto name from the text box below the Gyro
    *
-   * <p>You can add additional auto modes by adding additional comparisons to the switch structure
+   * You can add additional auto modes by adding additional comparisons to the switch structure
    * below with additional strings. If using the SendableChooser make sure to add them to the
    * chooser code above as well.
    */
   @Override
   public void autonomousInit() {
-    m_autoSelected = m_chooser.getSelected();
+    selectedAuto = autoChooser.getSelected();
     // m_autoSelected = SmartDashboard.getString("Auto Selector", kDefaultAuto);
-    System.out.println("Auto selected: " + m_autoSelected);
+    System.out.println("Auto selected: " + selectedAuto);
   }
 
   /** This function is called periodically during autonomous. */
   @Override
   public void autonomousPeriodic() {
-    switch (m_autoSelected) {
+    switch (selectedAuto) {
       case kCustomAuto:
         // Put custom auto code here
+        break;
+      case kP10:
         break;
       case kDefaultAuto:
       default:
