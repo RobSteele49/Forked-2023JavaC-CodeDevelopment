@@ -4,6 +4,9 @@
 
 package frc.robot;
 
+import org.opencv.videoio.VideoCapture;
+
+import edu.wpi.first.cscore.UsbCamera;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -14,6 +17,14 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
  * this project, you must also update the Main.java file in the project.
  */
 public class Robot extends TimedRobot {
+
+  /*
+   * These were also suggested by Gemini for support of the USB00 camera. 
+   */
+
+  private UsbCamera camera;
+  private VideoCapture cvCapture;
+
   private static final String kDefaultAuto = "Default";
   private static final String kCustomAuto = "My Auto";
   private String m_autoSelected;
@@ -24,6 +35,13 @@ public class Robot extends TimedRobot {
    * initialization code.
    */
   public Robot() {
+
+    // Method 1: Using UsbCamera (Recommended)
+    camera = new UsbCamera("MyCamera", 0); // "MyCamera" is the name, 0 is the camera index
+    camera.setResolution(320, 240); // Set desired resolution (optional)
+    camera.setFPS(15); // Set desired FPS (optional)
+    // camera.startAutomaticCapture(); // Start capturing video
+
     m_chooser.setDefaultOption("Default Auto", kDefaultAuto);
     m_chooser.addOption("My Auto", kCustomAuto);
     SmartDashboard.putData("Auto choices", m_chooser);
