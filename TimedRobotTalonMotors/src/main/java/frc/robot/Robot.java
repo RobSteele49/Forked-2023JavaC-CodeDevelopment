@@ -10,6 +10,11 @@ import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
+import frc.robot.Constants.Gripper;
+import frc.robot.Constants.CanBusID;
+import frc.robot.Constants.JoystickPortID;
+import frc.robot.Constants.SimulationMode;
+
 /**
  * The methods in this class are called automatically corresponding to each mode, as described in
  * the TimedRobot documentation. If you change the name of this class or the package after creating
@@ -40,6 +45,32 @@ public class Robot extends TimedRobot {
     m_chooser.setDefaultOption("Default Auto", kDefaultAuto);
     m_chooser.addOption("My Auto", kCustomAuto);
     SmartDashboard.putData("Auto choices", m_chooser);
+  }
+
+  @Override
+  public void robotInit() {
+     /*
+     * Set the 4 motor controllers to the correct controller type.
+     */
+
+     leftSimA = new TalonSRX(CanBusID.kLeftSimA);
+     leftSimB = new TalonSRX(CanBusID.kLeftSimB);
+ 
+     rightSimA = new TalonSRX(CanBusID.kRightSimA);
+     rightSimB = new TalonSRX(CanBusID.kRightSimB);
+
+     // Set leftMotor2 to follow leftMotor1
+     // Set rightMotor2 to follow rightMotor1
+    
+     leftSimB.follow(leftSimA);
+     rightSimB.follow(rightSimA);
+
+      // We need to invert one side of the drivetrain so that positive voltages
+      // result in both sides moving forward. Depending on how your robot's
+      // gearbox is constructed, you might have to invert the left side instead.
+
+      rightSimA.setInverted(true);
+
   }
 
   /**
