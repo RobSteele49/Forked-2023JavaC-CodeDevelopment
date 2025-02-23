@@ -4,25 +4,33 @@
 
 package frc.robot;
 
-import com.kauailabs.navx.frc.AHRS;
-import com.ctre.phoenix.motorcontrol.can.TalonSRX;
+// import com.kauailabs.navx.frc.AHRS;
 
 import edu.wpi.first.cameraserver.CameraServer;
-//import edu.wpi.first.util.sendable.SendableRegistry;
-import edu.wpi.first.wpilibj.SPI;
+
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
-//import frc.robot.Constants.Gripper;
-//import frc.robot.Constants.CanBusID;
-//import frc.robot.Constants.JoystickPortID;
-//import frc.robot.Constants.SimulationMode;
+// import com.ctre.phoenix.motorcontrol.ControlMode;
+// import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 
-//import com.revrobotics.RelativeEncoder;
-
+import edu.wpi.first.util.sendable.SendableRegistry;
 import edu.wpi.first.wpilibj.Joystick;
-//import edu.wpi.first.wpilibj.Timer; // use timer for different modes
+import edu.wpi.first.wpilibj.SPI;
+import edu.wpi.first.wpilibj.Timer; // use timer for different modes
+
+
+import frc.robot.Constants.Gripper;
+import frc.robot.Constants.CanBusID;
+import frc.robot.Constants.JoystickPortID;
+import frc.robot.Constants.SimulationMode;
+
+// import com.revrobotics.CANSparkMax;
+
+// import com.revrobotics.RelativeEncoder;
+
+// import com.revrobotics.CANSparkLowLevel.MotorType;
 
 /**
  * The methods in this class are called automatically corresponding to each mode, as described in
@@ -30,77 +38,30 @@ import edu.wpi.first.wpilibj.Joystick;
  * this project, you must also update the Main.java file in the project.
  */
 public class Robot extends TimedRobot {
-
   private static final String kDefaultAuto  = "Default";
   private static final String kCustomAuto   = "My Auto";
-  //private static final String kLeftSide     = "Left Side";
-  //private static final String kRightSide    = "Right Side";
-  //private static final String kRelative     = "Relative Encoder Testing";
-  //private static final String kMoveShoulder = "Move Shoulder";
-  //private static final String kMoveWrist    = "Move Wrist";
-  //private static final String kP10          = "Kp 10";
-  //private static final String kP25          = "Kp 25";
-  //private static final String kPID25        = "PID 25";
-
-  private String m_autoSelected;
+  private static final String kLeftSide     = "Left Side";
+  private static final String kRightSide    = "Right Side";
+  private static final String kRelative     = "Relative Encoder Testing";
+  private static final String kMoveShoulder = "Move Shoulder";
+  private static final String kMoveWrist    = "Move Wrist";
+  private static final String kP10          = "Kp 10";
+  private static final String kP25          = "Kp 25";
+  private static final String kPID25        = "PID 25";
+private String m_autoSelected;
   private final SendableChooser<String> m_chooser = new SendableChooser<>();
-
-  private double gyroAngle = 0.0;
-
-  /*
-   * navx MXP using SPI AHRS
-   */
-  
-  AHRS gyro = new AHRS(SPI.Port.kMXP);
-
-  /*
-   * These three private variables are for the three joysticks used for this robot
-   */
-
-   private Joystick m_leftStick;
-   private Joystick m_rightStick;
-   private Joystick m_controlStick;
-
-   /*
-   * These four private variables are for the 4 controllers for the base of the robot.
-   * The controllers are Talon SRX and currently (11/14/24) running an older version of
-   * software on board the controller.
-   */
-
-  private TalonSRX leftSimA;
-  private TalonSRX leftSimB;
-  private TalonSRX rightSimA;
-  private TalonSRX rightSimB;
-
 
   /**
    * This function is run when the robot is first started up and should be used for any
    * initialization code.
    */
   public Robot() {
-
-    CameraServer.startAutomaticCapture();
-    
-    m_chooser.setDefaultOption("Default Auto",   kDefaultAuto);
-    m_chooser.addOption("My Auto",               kCustomAuto);
-    //m_chooser.setDefaultOption("Default Auto",   kDefaultAuto);
-    //m_chooser.addOption("Left Side",             kLeftSide);
-    //m_chooser.addOption("Right Side",            kRightSide);
-    //m_chooser.addOption("Test Relative Encoder", kRelative);
-    //m_chooser.addOption("Move Shoulder",         kMoveShoulder);
-    //m_chooser.addOption("Move Wrist",            kMoveWrist);
-    //m_chooser.addOption("Kp 10",                 kP10);
-    //m_chooser.addOption("Kp 25",                 kP25);
-    //m_chooser.addOption("PID 25",                kPID25);
-
+    m_chooser.setDefaultOption("Default Auto", kDefaultAuto);
+    m_chooser.addOption("My Auto", kCustomAuto);
     SmartDashboard.putData("Auto choices", m_chooser);
 
+    CameraServer.startAutomaticCapture();
   }
-
-  //@Override
-  //public void robotInit() {
-    // SendableRegistry.add(gyro, "Gyro");
-  //}
 
   /**
    * This function is called every 20 ms, no matter the mode. Use this for items like diagnostics
