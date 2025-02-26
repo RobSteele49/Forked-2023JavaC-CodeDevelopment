@@ -8,7 +8,7 @@ import com.kauailabs.navx.frc.AHRS;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 
 import edu.wpi.first.cameraserver.CameraServer;
-//import edu.wpi.first.util.sendable.SendableRegistry;
+import edu.wpi.first.util.sendable.SendableRegistry;
 import edu.wpi.first.wpilibj.SPI;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
@@ -97,10 +97,10 @@ public class Robot extends TimedRobot {
 
   }
 
-  //@Override
-  //public void robotInit() {
+  @Override
+  public void robotInit() {
     // SendableRegistry.add(gyro, "Gyro");
-  //}
+  }
 
   /**
    * This function is called every 20 ms, no matter the mode. Use this for items like diagnostics
