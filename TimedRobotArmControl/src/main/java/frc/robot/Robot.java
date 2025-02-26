@@ -4,8 +4,13 @@
 
 package frc.robot;
 
-import com.revrobotics.CANSparkMax;
-import com.revrobotics.MotorType;
+//import com.revrobotics.spark.sparkMax;
+
+//import com.revrobotics.CANSparkMax;
+//import com.revrobotics.MotorType;
+
+import com.revrobotics.spark.SparkMax;
+
 
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
@@ -28,9 +33,9 @@ public class Robot extends TimedRobot {
    * These three private variables are for the 3 controllers for the arm.
    */
 
-   private CANSparkMax gripperMotor;
-   private CANSparkMax shoulderMotor;
-   private CANSparkMax wristMotor;
+   private SparkMax gripperMotor;
+   private SparkMax shoulderMotor;
+   private SparkMax wristMotor;
 
   /**
    * This function is run when the robot is first started up and should be used for any
