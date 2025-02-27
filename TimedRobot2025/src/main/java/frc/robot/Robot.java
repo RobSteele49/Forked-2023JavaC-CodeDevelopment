@@ -73,9 +73,9 @@ public class Robot extends TimedRobot {
    * These three private variables are for the 3 controllers for the arm.
    */
 
-   private SparkMax gripperMotor;
-   private SparkMax shoulderMotor;
-   private SparkMax wristMotor;
+   private SparkMax gripperMotor  = new SparkMax(CanBusID.kGripper,       MotorType.kBrushed);
+   private SparkMax shoulderMotor = new SparkMax(CanBusID.kShoulderJoint, MotorType.kBrushless);
+   private SparkMax wristMotor    = new SparkMax(CanBusID.kWristJoint,    MotorType.kBrushless);
 
    /*
    * These two variables are used to record the joystick values. They range from
@@ -100,9 +100,9 @@ public class Robot extends TimedRobot {
    * with the absolute encoder.
    */
 
-  private RelativeEncoder shoulderMotorRelativeEncoder;
+  private RelativeEncoder shoulderMotorRelativeEncoder = shoulderMotor.getEncoder();
   private double          shoulderMotorRelativePosition;
-  private RelativeEncoder wristMotorRelativeEncoder;
+  private RelativeEncoder wristMotorRelativeEncoder    = wristMotor.getEncoder();
   private double          wristMotorRelativePosition;
 
   /*
@@ -134,16 +134,8 @@ public class Robot extends TimedRobot {
     // CameraServer.startAutomaticCapture(0);
     // CameraServer.startAutomaticCapture(1);
 
-    m_chooser.setDefaultOption("Default Auto", kDefaultAuto);
-    m_chooser.addOption("My Auto", kCustomAuto);
-    SmartDashboard.putData("Auto choices", m_chooser);
-  
-  }
-
-  @Override
-  public void robotInit() {
-
     m_chooser.setDefaultOption("Default Auto",   kDefaultAuto);
+    m_chooser.addOption("My Auto",               kCustomAuto);
     m_chooser.addOption("Left Side",             kLeftSide);
     m_chooser.addOption("Right Side",            kRightSide);
     m_chooser.addOption("Test Relative Encoder", kRelative);
@@ -152,8 +144,23 @@ public class Robot extends TimedRobot {
     m_chooser.addOption("Kp 10",                 kP10);
     m_chooser.addOption("Kp 25",                 kP25);
     m_chooser.addOption("PID 25",                kPID25);
-
     SmartDashboard.putData("Auto choices", m_chooser);
+  
+  }
+
+  @Override
+  public void robotInit() {
+
+    // m_chooser.setDefaultOption("Default Auto",   kDefaultAuto);
+    // m_chooser.addOption("Left Side",             kLeftSide);
+    // m_chooser.addOption("Right Side",            kRightSide);
+    // m_chooser.addOption("Test Relative Encoder", kRelative);
+    // m_chooser.addOption("Move Shoulder",         kMoveShoulder);
+    // m_chooser.addOption("Move Wrist",            kMoveWrist);
+    // m_chooser.addOption("Kp 10",                 kP10);
+    // m_chooser.addOption("Kp 25",                 kP25);
+    // m_chooser.addOption("PID 25",                kPID25);
+    // SmartDashboard.putData("Auto choices", m_chooser);
 
     /*
      * Set the 4 motor controllers to the correct controller type.
@@ -166,12 +173,12 @@ public class Robot extends TimedRobot {
     rightSimB = new TalonSRX(CanBusID.kRightSimB);
 
     /*
-     * Set the 3 motors of the arm to the correct contrroller type.
+     * Set the 3 motors of the arm to the correct controller type.
      */
 
-    gripperMotor  = new SparkMax(CanBusID.kGripper,       MotorType.kBrushed);
-    shoulderMotor = new SparkMax(CanBusID.kShoulderJoint, MotorType.kBrushless);
-    wristMotor    = new SparkMax(CanBusID.kWristJoint,    MotorType.kBrushless);
+    // gripperMotor  = new SparkMax(CanBusID.kGripper,       MotorType.kBrushed);
+    // shoulderMotor = new SparkMax(CanBusID.kShoulderJoint, MotorType.kBrushless);
+    // wristMotor    = new SparkMax(CanBusID.kWristJoint,    MotorType.kBrushless);
 
     /*
      * Initialize the 3 joystics which are required to control the robot.
@@ -240,11 +247,9 @@ public class Robot extends TimedRobot {
       case kRelative:
         SmartDashboard.putString("case:", "kRelative");
 
-        shoulderMotorRelativeEncoder  = shoulderMotor.getEncoder();
         shoulderMotorRelativePosition = shoulderMotorRelativeEncoder.getPosition();
         SmartDashboard.putNumber("Shoulder Motor Position", shoulderMotorRelativePosition);
       
-        wristMotorRelativeEncoder    = wristMotor.getEncoder();
         wristMotorRelativePosition   = wristMotorRelativeEncoder.getPosition();
         SmartDashboard.putNumber("Wrist Motor Position", wristMotorRelativePosition);
 
@@ -309,7 +314,6 @@ public class Robot extends TimedRobot {
         SmartDashboard.putNumber("shouldVelocity", shoulderVelocity);
         shoulderMotor.set(shoulderVelocity);
 
-        shoulderMotorRelativeEncoder  = shoulderMotor.getEncoder();
         shoulderMotorRelativePosition = shoulderMotorRelativeEncoder.getPosition();
         SmartDashboard.putNumber("Shoulder Motor Position", shoulderMotorRelativePosition);
       
@@ -323,7 +327,6 @@ public class Robot extends TimedRobot {
         SmartDashboard.putNumber("wristVelocity", wristVelocity);
         wristMotor.set(wristVelocity);
 
-        wristMotorRelativeEncoder   = wristMotor.getEncoder();
         wristMotorRelativePosition  = wristMotorRelativeEncoder.getPosition();
         SmartDashboard.putNumber("Wrist Motor Position", wristMotorRelativePosition);
 
@@ -571,11 +574,9 @@ public class Robot extends TimedRobot {
   @Override
   public void testPeriodic() {
     
-    shoulderMotorRelativeEncoder  = shoulderMotor.getEncoder();
     shoulderMotorRelativePosition = shoulderMotorRelativeEncoder.getPosition();
     SmartDashboard.putNumber("Shoulder Motor Position", shoulderMotorRelativePosition);
     
-    wristMotorRelativeEncoder = wristMotor.getEncoder();
     wristMotorRelativePosition = wristMotorRelativeEncoder.getPosition();
     SmartDashboard.putNumber("Wrist Motor Position", wristMotorRelativePosition);
 
