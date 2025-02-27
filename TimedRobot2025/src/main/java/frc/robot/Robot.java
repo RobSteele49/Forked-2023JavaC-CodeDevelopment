@@ -570,8 +570,7 @@ public class Robot extends TimedRobot {
   /** This function is called periodically during test mode. */
   @Override
   public void testPeriodic() {
-    // Removed this code trying to ID where the failure in running the code is at.
-    /*
+    
     shoulderMotorRelativeEncoder  = shoulderMotor.getEncoder();
     shoulderMotorRelativePosition = shoulderMotorRelativeEncoder.getPosition();
     SmartDashboard.putNumber("Shoulder Motor Position", shoulderMotorRelativePosition);
@@ -601,9 +600,9 @@ public class Robot extends TimedRobot {
     SmartDashboard.putBoolean("Button 5", button5);
     SmartDashboard.putBoolean("Button 6", button6);
 
-    elapsedTime = m_timer.get(); // Get the elapsed time in seconds
-    SmartDashboard.putNumber("Elapsed Time", elapsedTime);
-    */
+    // elapsedTime = m_timer.get(); // Get the elapsed time in seconds
+    // SmartDashboard.putNumber("Elapsed Time", elapsedTime);
+
   }
 
   /** This function is called once when the robot is first started up. */
