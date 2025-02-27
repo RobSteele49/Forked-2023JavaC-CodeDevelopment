@@ -4,13 +4,6 @@
 
 package frc.robot;
 
-//import com.revrobotics.spark.sparkMax;
-
-//import com.revrobotics.CANSparkMax;
-//import com.revrobotics.MotorType;
-
-import com.revrobotics.spark.SparkMax;
-
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -25,16 +18,6 @@ public class Robot extends TimedRobot {
   private static final String kCustomAuto = "My Auto";
   private String m_autoSelected;
   private final SendableChooser<String> m_chooser = new SendableChooser<>();
-
-  private ArmControlKpKiKd armControlPID = new ArmControlKpKiKd(0.01, 0.001, 0.00);
-
-  /*
-   * These three private variables are for the 3 controllers for the arm.
-   */
-
-   private SparkMax gripperMotor;
-   private SparkMax shoulderMotor;
-   private SparkMax wristMotor;
 
   /**
    * This function is run when the robot is first started up and should be used for any
