@@ -15,10 +15,11 @@ import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 import edu.wpi.first.wpilibj.Joystick;
 // import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj.TimedRobot;
-import edu.wpi.first.wpilibj.Timer;
+// Removed this code to try and determine why the code is failing to load
+// import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import edu.wpi.first.cameraserver.CameraServer;
+// import edu.wpi.first.cameraserver.CameraServer;
 
 import frc.robot.Constants.Gripper;
 import frc.robot.Constants.CanBusID;
@@ -120,8 +121,9 @@ public class Robot extends TimedRobot {
    * for all of the modes.
    */
 
-   private Timer m_timer;
-   private double elapsedTime;
+   // Removing this code to try and detemine whey the code is failing to load
+   // private Timer m_timer;
+   private double elapsedTime = 0.0;
 
   /**
    * This function is run when the robot is first started up and should be used for any
@@ -129,8 +131,8 @@ public class Robot extends TimedRobot {
    */
   public Robot() {
 
-    CameraServer.startAutomaticCapture(0);
-    //CameraServer.startAutomaticCapture(1);
+    // CameraServer.startAutomaticCapture(0);
+    // CameraServer.startAutomaticCapture(1);
 
     m_chooser.setDefaultOption("Default Auto", kDefaultAuto);
     m_chooser.addOption("My Auto", kCustomAuto);
@@ -270,8 +272,9 @@ public class Robot extends TimedRobot {
         SmartDashboard.putBoolean("Button 5", button5);
         SmartDashboard.putBoolean("Button 6", button6);
   
-        elapsedTime = m_timer.get(); // Get the elapsed time in seconds
-        SmartDashboard.putNumber("Elapsed Time", elapsedTime);
+        // Removed this code to try and determine where the code is failing.
+        // elapsedTime = m_timer.get(); // Get the elapsed time in seconds
+        // SmartDashboard.putNumber("Elapsed Time", elapsedTime);
         break;
 
       /*
@@ -443,8 +446,9 @@ public class Robot extends TimedRobot {
   @Override
   public void teleopInit() {
     System.out.println("Teleop Init function");
-    m_timer.reset(); // Reset the timer at the start of test mode
-    m_timer.start(); // Start the timer
+    // Removed this code to try and determine where the code is failing.
+    // m_timer.reset(); // Reset the timer at the start of test mode
+    // m_timer.start(); // Start the timer
   }
 
   /** This function is called periodically during operator control. */
@@ -496,16 +500,20 @@ public class Robot extends TimedRobot {
     gripperMotor.set(gripperVelocity);
     SmartDashboard.putNumber("Gripper Velocity", gripperVelocity);
 
-    elapsedTime = m_timer.get(); // Get the elapsed time in seconds
-    SmartDashboard.putNumber("Elapsed Time", elapsedTime);
+    // Removed this code to try and determine where the code is failing.
+    // elapsedTime = m_timer.get(); // Get the elapsed time in seconds
+    // SmartDashboard.putNumber("Elapsed Time", elapsedTime);
   }
 
   /** This function is called once when the robot is disabled. */
   @Override
   public void disabledInit() {
+    // Removing this code to try and determine where the code is failing.
+    /*
     System.out.println("Disabled Init function");
     m_timer.reset(); // Reset the timer at the start of disabled mode
     m_timer.start(); // Start the timer
+    */
 
     /*
      * Set the Velocitys of all the motors to 0.0.
@@ -522,16 +530,22 @@ public class Robot extends TimedRobot {
      * is necessary, will see if that is necessary.
      */
 
+     // Removing this code to try and determine where the code is failing.
+     /*
      gripperMotor.set(gripperVelocity);
      shoulderMotor.set(shoulderVelocity);
      wristMotor.set(wristVelocity);
+     */
   }
 
   /** This function is called periodically when disabled. */
   @Override
   public void disabledPeriodic() {
+    // Removing timer code to try and determine where the code is failing.
+    /*
     elapsedTime = m_timer.get(); // Get the elapsed time in seconds
     SmartDashboard.putNumber("Elapsed Time", elapsedTime);
+    */
 
     /*
      * Reset the Velocitys of all the motors.
@@ -547,14 +561,17 @@ public class Robot extends TimedRobot {
   /** This function is called once when test mode is enabled. */
   @Override
   public void testInit() {
-    System.out.println("Test Init function");
-    m_timer.reset(); // Reset the timer at the start of test mode
-    m_timer.start(); // Start the timer
+    // Removed this code to try and determine where the code is failing.
+    // System.out.println("Test Init function");
+    // m_timer.reset(); // Reset the timer at the start of test mode
+    // m_timer.start(); // Start the timer
   }
 
   /** This function is called periodically during test mode. */
   @Override
   public void testPeriodic() {
+    // Removed this code trying to ID where the failure in running the code is at.
+    /*
     shoulderMotorRelativeEncoder  = shoulderMotor.getEncoder();
     shoulderMotorRelativePosition = shoulderMotorRelativeEncoder.getPosition();
     SmartDashboard.putNumber("Shoulder Motor Position", shoulderMotorRelativePosition);
@@ -586,6 +603,7 @@ public class Robot extends TimedRobot {
 
     elapsedTime = m_timer.get(); // Get the elapsed time in seconds
     SmartDashboard.putNumber("Elapsed Time", elapsedTime);
+    */
   }
 
   /** This function is called once when the robot is first started up. */
