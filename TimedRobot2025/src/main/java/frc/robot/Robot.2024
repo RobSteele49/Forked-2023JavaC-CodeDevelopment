@@ -237,7 +237,7 @@ public class Robot extends TimedRobot {
     rightSimA = new TalonSRX(CanBusID.kRightSimA);
     rightSimB = new TalonSRX(CanBusID.kRightSimB);
 
-    /*
+    /*R
      * Set the 3 motors of the arm to the correct contrroller type.
      */
 
