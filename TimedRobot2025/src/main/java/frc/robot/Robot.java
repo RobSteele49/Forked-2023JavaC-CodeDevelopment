@@ -396,7 +396,6 @@ public class Robot extends TimedRobot {
         desiredShoulderPosition = -25.0;
         desiredWristPosition    =  25.0;
 
-        /*
         if (SimulationMode.simulate) { // simulate the physics
           shoulderMotorRelativePosition += (shoulderVelocity * 0.050);
           wristMotorRelativePosition    += (wristVelocity * 0.050);
@@ -422,7 +421,6 @@ public class Robot extends TimedRobot {
 
         SmartDashboard.putNumber("shoulderVelocity", shoulderVelocity);
         SmartDashboard.putNumber("wristVelocity", wristVelocity);
-        */
 
         break;
       case kDefaultAuto:
