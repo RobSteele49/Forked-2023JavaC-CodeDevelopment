@@ -98,8 +98,8 @@ public class Robot extends TimedRobot {
    */
   public Robot() {
 
-    CameraServer.startAutomaticCapture(0);
-    CameraServer.startAutomaticCapture(1);
+    //CameraServer.startAutomaticCapture(0);
+    //CameraServer.startAutomaticCapture(1);
 
     m_chooser.setDefaultOption("Default Auto", kDefaultAuto);
     m_chooser.addOption("My Auto", kCustomAuto);
