@@ -16,7 +16,7 @@ import edu.wpi.first.wpilibj.Joystick;
 // import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj.TimedRobot;
 // Removed this code to try and determine why the code is failing to load
-// import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 // import edu.wpi.first.cameraserver.CameraServer;
@@ -121,8 +121,7 @@ public class Robot extends TimedRobot {
    * for all of the modes.
    */
 
-   // Removing this code to try and detemine whey the code is failing to load
-   // private Timer m_timer;
+   private Timer m_timer = new Timer();
    private double elapsedTime = 0.0;
 
   /**
@@ -277,9 +276,8 @@ public class Robot extends TimedRobot {
         SmartDashboard.putBoolean("Button 5", button5);
         SmartDashboard.putBoolean("Button 6", button6);
   
-        // Removed this code to try and determine where the code is failing.
-        // elapsedTime = m_timer.get(); // Get the elapsed time in seconds
-        // SmartDashboard.putNumber("Elapsed Time", elapsedTime);
+        elapsedTime = m_timer.get(); // Get the elapsed time in seconds
+        SmartDashboard.putNumber("Elapsed Time", elapsedTime);
         break;
 
       /*
@@ -449,9 +447,8 @@ public class Robot extends TimedRobot {
   @Override
   public void teleopInit() {
     System.out.println("Teleop Init function");
-    // Removed this code to try and determine where the code is failing.
-    // m_timer.reset(); // Reset the timer at the start of test mode
-    // m_timer.start(); // Start the timer
+    m_timer.reset(); // Reset the timer at the start of test mode
+    m_timer.start(); // Start the timer
   }
 
   /** This function is called periodically during operator control. */
@@ -503,20 +500,17 @@ public class Robot extends TimedRobot {
     gripperMotor.set(gripperVelocity);
     SmartDashboard.putNumber("Gripper Velocity", gripperVelocity);
 
-    // Removed this code to try and determine where the code is failing.
-    // elapsedTime = m_timer.get(); // Get the elapsed time in seconds
-    // SmartDashboard.putNumber("Elapsed Time", elapsedTime);
+    elapsedTime = m_timer.get(); // Get the elapsed time in seconds
+    SmartDashboard.putNumber("Elapsed Time", elapsedTime);
   }
 
   /** This function is called once when the robot is disabled. */
   @Override
   public void disabledInit() {
-    // Removing this code to try and determine where the code is failing.
-    /*
+    
     System.out.println("Disabled Init function");
     m_timer.reset(); // Reset the timer at the start of disabled mode
     m_timer.start(); // Start the timer
-    */
 
     /*
      * Set the Velocitys of all the motors to 0.0.
@@ -544,11 +538,8 @@ public class Robot extends TimedRobot {
   /** This function is called periodically when disabled. */
   @Override
   public void disabledPeriodic() {
-    // Removing timer code to try and determine where the code is failing.
-    /*
     elapsedTime = m_timer.get(); // Get the elapsed time in seconds
     SmartDashboard.putNumber("Elapsed Time", elapsedTime);
-    */
 
     /*
      * Reset the Velocitys of all the motors.
@@ -564,10 +555,9 @@ public class Robot extends TimedRobot {
   /** This function is called once when test mode is enabled. */
   @Override
   public void testInit() {
-    // Removed this code to try and determine where the code is failing.
-    // System.out.println("Test Init function");
-    // m_timer.reset(); // Reset the timer at the start of test mode
-    // m_timer.start(); // Start the timer
+    System.out.println("Test Init function");
+    m_timer.reset(); // Reset the timer at the start of test mode
+    m_timer.start(); // Start the timer
   }
 
   /** This function is called periodically during test mode. */
@@ -601,9 +591,8 @@ public class Robot extends TimedRobot {
     SmartDashboard.putBoolean("Button 5", button5);
     SmartDashboard.putBoolean("Button 6", button6);
 
-    // elapsedTime = m_timer.get(); // Get the elapsed time in seconds
-    // SmartDashboard.putNumber("Elapsed Time", elapsedTime);
-
+    elapsedTime = m_timer.get(); // Get the elapsed time in seconds
+    SmartDashboard.putNumber("Elapsed Time", elapsedTime);
   }
 
   /** This function is called once when the robot is first started up. */
