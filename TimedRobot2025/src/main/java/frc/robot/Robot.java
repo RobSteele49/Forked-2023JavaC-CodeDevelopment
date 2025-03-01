@@ -1,3 +1,5 @@
+// Filename: Robot.java
+
 // Copyright (c) FIRST and other WPILib contributors.
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
@@ -130,6 +132,12 @@ public class Robot extends TimedRobot {
    */
   public Robot() {
 
+    /*
+     *  Leave these two camera server statements commented out for now.
+     *  Need to determine how to set the bandwidth for the cameras and
+     *  the resolution for the cameras.
+     */
+
     // CameraServer.startAutomaticCapture(0);
     // CameraServer.startAutomaticCapture(1);
 
@@ -150,17 +158,6 @@ public class Robot extends TimedRobot {
   @Override
   public void robotInit() {
 
-    // m_chooser.setDefaultOption("Default Auto",   kDefaultAuto);
-    // m_chooser.addOption("Left Side",             kLeftSide);
-    // m_chooser.addOption("Right Side",            kRightSide);
-    // m_chooser.addOption("Test Relative Encoder", kRelative);
-    // m_chooser.addOption("Move Shoulder",         kMoveShoulder);
-    // m_chooser.addOption("Move Wrist",            kMoveWrist);
-    // m_chooser.addOption("Kp 10",                 kP10);
-    // m_chooser.addOption("Kp 25",                 kP25);
-    // m_chooser.addOption("PID 25",                kPID25);
-    // SmartDashboard.putData("Auto choices", m_chooser);
-
     /*
      * Set the 4 motor controllers to the correct controller type.
      */
@@ -170,14 +167,6 @@ public class Robot extends TimedRobot {
 
     rightSimA = new TalonSRX(CanBusID.kRightSimA);
     rightSimB = new TalonSRX(CanBusID.kRightSimB);
-
-    /*
-     * Set the 3 motors of the arm to the correct controller type.
-     */
-
-    // gripperMotor  = new SparkMax(CanBusID.kGripper,       MotorType.kBrushed);
-    // shoulderMotor = new SparkMax(CanBusID.kShoulderJoint, MotorType.kBrushless);
-    // wristMotor    = new SparkMax(CanBusID.kWristJoint,    MotorType.kBrushless);
 
     /*
      * Initialize the 3 joystics which are required to control the robot.
@@ -213,17 +202,22 @@ public class Robot extends TimedRobot {
     m_autoSelected = m_chooser.getSelected();
     // m_autoSelected = SmartDashboard.getString("Auto Selector", kDefaultAuto);
     System.out.println("Auto selected: " + m_autoSelected);
+    m_timer.reset(); // Reset the timer at the start of test mode
+    m_timer.start(); // Start the timer
   }
 
   /** This function is called periodically during autonomous. */
   @Override
   public void autonomousPeriodic() {
+
+    elapsedTime = m_timer.get(); // Get the elapsed time in seconds
+    SmartDashboard.putNumber("Elapsed Time", elapsedTime);
+
     switch (m_autoSelected) {
       case kCustomAuto:
         // Put custom auto code here
         break;
       case kLeftSide:
-        SmartDashboard.putString("case:", "kLeftSide");
         leftVelocity = 0.0;
         SmartDashboard.putNumber("Left Velocity", leftVelocity);
         leftSimA.set(ControlMode.PercentOutput,  leftVelocity); // Set the motor Velocity
@@ -235,7 +229,6 @@ public class Robot extends TimedRobot {
         SmartDashboard.putNumber("left sim b percent output",   leftSimB.getMotorOutputPercent());
         break;
       case kRightSide:
-        SmartDashboard.putString("case:", "kRightSide");
         rightVelocity = 0.0;
         SmartDashboard.putNumber("Right Velocity", rightVelocity);
         rightSimA.set(ControlMode.PercentOutput, rightVelocity);
@@ -244,8 +237,6 @@ public class Robot extends TimedRobot {
         SmartDashboard.putNumber("right sim b device id: ",      rightSimB.getDeviceID());
         break;
       case kRelative:
-        SmartDashboard.putString("case:", "kRelative");
-
         shoulderMotorRelativePosition = shoulderMotorRelativeEncoder.getPosition();
         SmartDashboard.putNumber("Shoulder Motor Position", shoulderMotorRelativePosition);
       
@@ -304,7 +295,6 @@ public class Robot extends TimedRobot {
        */
 
       case kMoveShoulder:
-        SmartDashboard.putString("case:", "kMoveShoulder");
         shoulderVelocity = 0.0;
         if (elapsedTime > 2.0 && elapsedTime < 7.0) {
           shoulderVelocity = -0.1;
@@ -317,7 +307,6 @@ public class Robot extends TimedRobot {
       
         break;
       case kMoveWrist:
-        SmartDashboard.putString("case:", "kMoveWrist");
         wristVelocity = 0.0;
         if (elapsedTime > 2.0 && elapsedTime < 3.0) {
           wristVelocity = 0.1;
@@ -330,8 +319,6 @@ public class Robot extends TimedRobot {
 
         break;
       case kP10:
-        SmartDashboard.putString("case:", "kP10");
-
         desiredShoulderPosition = -10.0;
         desiredWristPosition    =  10.0;
 
@@ -363,7 +350,6 @@ public class Robot extends TimedRobot {
 
         break;
       case kP25:
-        SmartDashboard.putString("case:", "kP25");
         desiredShoulderPosition = -25.0;
         desiredWristPosition    =  25.0;
 
@@ -395,8 +381,6 @@ public class Robot extends TimedRobot {
 
         break;
       case kPID25:
-        SmartDashboard.putString("case:", "PID 25");
-
         desiredShoulderPosition = -25.0;
         desiredWristPosition    =  25.0;
 
@@ -429,8 +413,6 @@ public class Robot extends TimedRobot {
         break;
       case kDefaultAuto:
       default:
-        SmartDashboard.putString("case:", "default");
-        // Put default auto code here
         // Set motor Velocitys for the base to 0
 
         leftVelocity     = 0.0;
@@ -438,7 +420,6 @@ public class Robot extends TimedRobot {
         gripperVelocity  = 0.0;
         shoulderVelocity = 0.0;
         wristVelocity    = 0.0;
-        // Put default auto code here
         break;
     }
   }
